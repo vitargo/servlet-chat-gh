@@ -34,4 +34,8 @@ public class JsonHelper {
         }
         return Optional.empty();
     }
+
+    public static void main(String[] args) {
+        log.info("hh");
+    }
 }
