@@ -25,7 +25,7 @@ public class JsonHelper {
         return Optional.empty();
     }
 
-    public static <T> Optional<T> fromJSON(String str, Class<T> clz){
+    public static <T> Optional<T> fromJson(String str, Class<T> clz){
         try {
             log.debug("Before call to method: {}", str);
             return Optional.of(objectMapper.readValue(str, clz));
