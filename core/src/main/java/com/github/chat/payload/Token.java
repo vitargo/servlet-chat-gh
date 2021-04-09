@@ -1,4 +1,4 @@
 package com.github.chat.payload;
 
-public class Tokin {
+public class Token {
 }
