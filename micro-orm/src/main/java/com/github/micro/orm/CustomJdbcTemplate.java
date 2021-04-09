@@ -1,6 +1,7 @@
 package com.github.micro.orm;
 
-import javax.sql.DataSource;
+import com.github.chat.config.DatabaseConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,9 +9,9 @@ import java.util.List;
 
 public class CustomJdbcTemplate {
 
-    private final DataSource dataSource;
+    private final DatabaseConfig dataSource;
 
-    public CustomJdbcTemplate(DataSource dataSource) {
+    public CustomJdbcTemplate(DatabaseConfig dataSource) {
         this.dataSource = dataSource;
     }
 
