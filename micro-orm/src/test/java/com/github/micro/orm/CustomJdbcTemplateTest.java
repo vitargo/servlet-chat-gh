@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import java.util.Collection;
 
+import static org.junit.Assert.*;
+
 public class CustomJdbcTemplateTest {
 
     CustomJdbcTemplate jdbcTemplate = new CustomJdbcTemplate(new DatabaseConfig());
@@ -14,7 +16,7 @@ public class CustomJdbcTemplateTest {
 
     @Test
     public void findAll() {
-        Collection<User> act = jdbcTemplate.findAll("SELECT * FROM user", rowMapper);
+        Collection act = jdbcTemplate.findAll("SELECT * FROM ", rowMapper);
         System.out.println(act + "jj");
     }
 
