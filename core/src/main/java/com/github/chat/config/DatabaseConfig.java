@@ -8,12 +8,12 @@ import java.sql.SQLException;
 
 public class DatabaseConfig {
 
-    private static HikariConfig config = new HikariConfig();
+    private HikariConfig config = new HikariConfig();
 
-    private static HikariDataSource ds;
+    private HikariDataSource ds;
 
-    static {
-        config.setJdbcUrl( "jdbc:postgresql://localhost:5342/postgresdb" );
+    {
+        config.setJdbcUrl( "jdbc:postgresql://localhost:5432/servlet_chat" );
         config.setUsername( "user" );
         config.setPassword( "password" );
         config.addDataSourceProperty( "cachePrepStmts" , "true" );
@@ -22,7 +22,7 @@ public class DatabaseConfig {
         ds = new HikariDataSource( config );
     }
 
-    public static Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         return ds.getConnection();
     }
 //    static final String DB_URL = "jdbc:postgresql://localhost:5342/postgresdb";
