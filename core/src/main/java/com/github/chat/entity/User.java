@@ -1,8 +1,11 @@
 package com.github.chat.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -5210081818555834792L;
 
     private long id;
 
