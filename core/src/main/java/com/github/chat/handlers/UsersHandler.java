@@ -1,6 +1,10 @@
 package com.github.chat.handlers;
 
 import com.github.chat.controllers.UsersController;
+import com.github.chat.dto.UserAuthDto;
+import com.github.chat.exceptions.BadRequest;
+import com.github.chat.payload.Token;
+import com.github.chat.utils.JsonHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -23,7 +27,10 @@ public class UsersHandler extends HttpServlet {
             throws ServletException,
             IOException {
         ServletOutputStream out = resp.getOutputStream();
-        out.write("hello Tomcat".getBytes());
+        req.getAuthType();
+        Token result = this.usersController.auth(new UserAuthDto());
+        String str = JsonHelper.toJson(result).orElseThrow(BadRequest::new);
+        out.write(str.getBytes());
         out.flush();
         out.close();
     }
