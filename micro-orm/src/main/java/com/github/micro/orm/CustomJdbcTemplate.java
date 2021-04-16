@@ -1,8 +1,6 @@
 package com.github.micro.orm;
 
-import com.github.chat.config.DatabaseConfig;
-import com.github.micro.orm.impl.exceptions.JDBCException;
-
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,9 +8,9 @@ import java.util.List;
 
 public class CustomJdbcTemplate {
 
-    private final DatabaseConfig dataSource;
+    private final DataSource dataSource;
 
-    public CustomJdbcTemplate(DatabaseConfig dataSource) {
+    public CustomJdbcTemplate(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -26,8 +24,6 @@ public class CustomJdbcTemplate {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new JDBCException();
-
         }
         return result;
     }
@@ -42,7 +38,6 @@ public class CustomJdbcTemplate {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new JDBCException();
         }
         return result;
     }
@@ -55,7 +50,6 @@ public class CustomJdbcTemplate {
             result = re.extract(rs);
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new JDBCException();
         }
         return result;
     }
@@ -72,7 +66,6 @@ public class CustomJdbcTemplate {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new JDBCException();
         }
         return result;
     }
@@ -88,7 +81,6 @@ public class CustomJdbcTemplate {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new JDBCException();
         }
     }
 
@@ -104,7 +96,6 @@ public class CustomJdbcTemplate {
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new JDBCException();
         }
     }
 
