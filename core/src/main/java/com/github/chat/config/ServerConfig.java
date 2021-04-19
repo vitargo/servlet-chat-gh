@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import java.io.File;
 
 public class ServerConfig {
+
     public static Tomcat start() throws ServletException, LifecycleException {
         Tomcat tomcat = new Tomcat();
 
@@ -16,7 +17,7 @@ public class ServerConfig {
             webPort = "8080";
         }
 
-        tomcat.setPort(Integer.valueOf(webPort));
+        tomcat.setPort(Integer.parseInt(webPort));
 
         Context ctx = tomcat.addWebapp("/", new File(".").getAbsolutePath());
         tomcat.addServlet("","UserHandler",HandlerConfig.usersHandler());

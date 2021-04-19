@@ -1,5 +1,7 @@
 package com.github.chat.service;
 
+import com.github.chat.dto.UserAuthDto;
+import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.User;
 import com.github.chat.repository.UsersRepository;
 
@@ -31,5 +33,15 @@ public class UserService implements IUsersService{
     @Override
     public void delete(long id) {
         this.repo.remove(id);
+    }
+
+    @Override
+    public User findAuth(UserAuthDto payload) {
+        return null;
+    }
+
+    @Override
+    public void insert(UserRegDto payload) {
+
     }
 }
