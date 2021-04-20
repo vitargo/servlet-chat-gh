@@ -12,7 +12,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.spec.KeySpec;
 import java.util.Base64;
-import java.util.Date;
 
 public class TokenProvider {
 
@@ -65,15 +64,5 @@ public class TokenProvider {
             System.out.println("Error while decrypting: " + e);
         }
         return newT;
-    }
-
-    public static void main(String[] args) {
-        Token t = new Token(1L, "Aaaa","Bbb", new Date(), new Date());
-        System.out.println(t);
-        String cipher = encode(t);
-        System.out.println(cipher);
-        Token newT = decode(cipher);
-        System.out.println(newT);
-
     }
 }
