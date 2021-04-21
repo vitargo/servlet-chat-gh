@@ -1,4 +1,6 @@
 package com.github.chat.payload;
 
-public class Topic {
+public enum Topic {
+    message, auth;
+
 }

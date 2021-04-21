@@ -1,16 +1,37 @@
 package com.github.chat.repository.impl;
 
-import com.github.micro.orm.CustomJdbcTemplate;
+import com.github.chat.entity.User;
+import com.github.chat.repository.UsersRepository;
 
-public class UserRepoImpl {
+import javax.sql.DataSource;
+import java.util.List;
 
-    private final CustomJdbcTemplate customJDBCTemplate;
+public class UserRepoImpl implements UsersRepository {
 
-    public UserRepoImpl(CustomJdbcTemplate customJDBCTemplate) {
-        this.customJDBCTemplate = customJDBCTemplate;
+    private final DataSource dataSource;
+
+    public UserRepoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
 
+    @Override
+    public User save() {
+        return null;
+    }
 
+    @Override
+    public List<User> findAll() {
+        return null;
+    }
 
+    @Override
+    public void update(long id) {
+
+    }
+
+    @Override
+    public void remove(long id) {
+
+    }
 }
