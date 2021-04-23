@@ -1,17 +1,24 @@
 package com.github.chat.repository;
 
+import com.github.chat.dto.UserAuthDto;
+import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.User;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface UsersRepository {
 
-    User save();
+    User save(UserRegDto userRegDto);
 
     List<User> findAll();
 
-    void update(long id);
+    User findAuth(UserAuthDto userAuthDto);
 
-    void remove(long id);
+    User findReg(UserRegDto userRegDto);
+
+    User update(User user);
+
+    void remove(User user);
 
 }
