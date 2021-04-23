@@ -1,43 +1,62 @@
 package com.github.chat.dto;
 
+import com.github.chat.entity.User;
+
+import java.util.Objects;
+
 public class UserAuthDto {
 
-    private Long id;
+    private String login;
 
-    private String firstName;
-
-    private String lastName;
-
-    public UserAuthDto(Long id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
+    private String password;
 
     public UserAuthDto() {
     }
 
-    public Long getId() {
-        return id;
+    public UserAuthDto(String login, String password) {
+        this.login = login;
+        this.password = password;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public UserAuthDto(User user) {
+        this.login = user.getLogin();
+        this.password = user.getPassword();
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getLogin() {
+        return login;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getPassword() {
+        return password;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserAuthDto that = (UserAuthDto) o;
+        return login.equals(that.login) && password.equals(that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(login, password);
+    }
+
+    @Override
+    public String toString() {
+        return "UserAuthDto{" +
+                "login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
