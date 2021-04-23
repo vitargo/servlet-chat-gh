@@ -1,12 +1,14 @@
 package com.github.micro.orm;
 
+import com.github.micro.orm.exceptions.CustomSQLException;
+
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CustomJdbcTemplate {
+public class CustomJdbcTemplate<T> {
 
     private final DataSource dataSource;
 
@@ -14,7 +16,7 @@ public class CustomJdbcTemplate {
         this.dataSource = dataSource;
     }
 
-    public <T> Collection<T> findAll(String query, CustomRowMapper<T> rm, Object... params) {
+    public <T> List<T> findAll(String query, CustomRowMapper<T> rm, Object... params) {
         List<T> result = new ArrayList<>();
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -23,7 +25,7 @@ public class CustomJdbcTemplate {
                 result.add(rm.rowMap(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            // TODO logger
         }
         return result;
     }
@@ -37,7 +39,7 @@ public class CustomJdbcTemplate {
                 result = rm.rowMap(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            // TODO logger
         }
         return result;
     }
@@ -49,7 +51,7 @@ public class CustomJdbcTemplate {
             ResultSet rs = stmt.executeQuery();
             result = re.extract(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            // TODO logger
         }
         return result;
     }
@@ -65,37 +67,48 @@ public class CustomJdbcTemplate {
                 result = rm.rowMap(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            // TODO logger
         }
         return result;
     }
 
-    public void update(String query, Object... params) {
+    public T update(String query, CustomRowMapper<T> rm, Object... params) {
+        T result = null;
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            if (params.length != 0) {
-                for (int i = 0; i < params.length; i++) {
-                    stmt.setObject(i + 1, params[i]);
-                }
-                stmt.execute();
+            setParameters(stmt, params);
+            int row = stmt.executeUpdate();
+            if(row != 0){
+                ResultSet rs = stmt.getGeneratedKeys();
+                rs.next();
+                result = rm.rowMap(rs);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e){
+            // TODO logger
         }
+        return  result;
     }
 
     public <T> void delete(String query, Object... params) {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            if (params.length != 0) {
-                for (int i = 0; i < params.length; i++) {
-                    stmt.setObject(i + 1, params[i]);
-                }
-                stmt.execute();
-            }
+            setParameters(stmt, params);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            // TODO logger
+        }
+
+    }
+
+    private void setParameters(PreparedStatement statement, Object... params) {
+        if (params.length != 0) {
+            for (int i = 0; i < params.length; i++) {
+                try {
+                    statement.setObject(i + 1, params[i]);
+                } catch (SQLException e) {
+                    // TODO logger
+                }
+            }
         }
     }
 
