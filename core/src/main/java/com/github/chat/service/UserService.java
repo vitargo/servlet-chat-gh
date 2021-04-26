@@ -11,13 +11,17 @@ public class UserService implements IUsersService{
 
     private final UsersRepository repo;
 
+    public List<User> cache;
+
     public UserService(UsersRepository repo) {
         this.repo = repo;
     }
 
     @Override
-    public User create(User user) {
-        return this.repo.save();
+    public User create(UserRegDto userRegDto) {
+        User result = this.repo.save(userRegDto);
+        this.cache.add(result);
+        return result;
     }
 
     @Override
@@ -26,13 +30,13 @@ public class UserService implements IUsersService{
     }
 
     @Override
-    public void update(long id) {
-        this.repo.update(id);
+    public User update(User user) {
+        return this.repo.update(user);
     }
 
     @Override
-    public void delete(long id) {
-        this.repo.remove(id);
+    public void delete(User user) {
+        this.repo.remove(user);
     }
 
     @Override

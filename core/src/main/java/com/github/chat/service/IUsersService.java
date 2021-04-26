@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface IUsersService {
 
-    User create(User user);
+    User create(UserRegDto userRegDto);
 
     List<User> read();
 
-    void update(long id);
+    User update(User user);
 
-    void delete(long id);
+    void delete(User user);
 
     User findAuth(UserAuthDto payload);
 
