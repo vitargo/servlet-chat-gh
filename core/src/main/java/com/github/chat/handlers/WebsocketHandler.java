@@ -14,6 +14,7 @@ public class WebsocketHandler {
     @OnMessage
     public void messages(Session session, String payload){
         System.out.println(payload);
+        //todo sending messages with websocket's
         try {
             session.getBasicRemote().sendText(payload);
         }catch (IOException e){
