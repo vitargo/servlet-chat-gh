@@ -11,9 +11,9 @@ import java.util.GregorianCalendar;
 
 public class TokenProviderTest {
 
-    Date dateStart = new GregorianCalendar(2019, Calendar.FEBRUARY, 11).getTime();
-    Date dateFinish = new GregorianCalendar(2023, Calendar.APRIL, 23).getTime();
-    Token t = new Token(1L, "Aaaa","Bbbb", new Date(), new Date());
+    long dateStart = new GregorianCalendar(2019, Calendar.FEBRUARY, 11).getTime().getTime();
+    long dateFinish = new GregorianCalendar(2023, Calendar.APRIL, 23).getTime().getTime();
+    Token t = new Token(1L, "Aaaa","Bbbb", new Date().getTime(), new Date().getTime());
     Token tAnother = new Token(203L, "First","One", dateStart, dateFinish);
     Token tNull = null;
 

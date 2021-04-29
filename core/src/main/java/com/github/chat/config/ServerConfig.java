@@ -1,27 +1,24 @@
 package com.github.chat.config;
 
 import com.github.chat.handlers.WebsocketHandler;
-import com.github.chat.utils.WrapTomcat;
+import com.github.chat.network.Broker;
+import com.github.chat.network.WebsocketConnectionPool;
+import com.github.chat.utils.ServerRunner;
 import org.apache.catalina.Context;
-import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.websocket.ClientEndpointConfig;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
 import java.io.File;
-import java.net.http.WebSocket;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class ServerConfig {
 
-    public static WrapTomcat start() throws ServletException, LifecycleException {
-        WrapTomcat tomcat = new WrapTomcat();
+    public static ServerRunner start() throws ServletException {
+        Tomcat tomcat = new Tomcat();
 
         String webPort = System.getenv("PORT");
         if (webPort == null || webPort.isEmpty()) {
@@ -29,19 +26,37 @@ public class ServerConfig {
         }
 
         tomcat.setPort(Integer.parseInt(webPort));
-
         Context ctx = tomcat.addWebapp("/", new File(".").getAbsolutePath());
-        tomcat.initCtx(ctx);
-        tomcat.addServlet("", "UserHandler", HandlerConfig.usersHandler());
-        ctx.addServletMappingDecoded("/*", "UserHandler");
 
-        return tomcat;
+        tomcat.addServlet("", "UserHandler", HandlerConfig.usersHandler());
+        ctx.addServletMappingDecoded("/users/*", "UserHandler");
+
+        return new ServerRunner(tomcat, ctx, List.of(websocketHandler));
     }
 
-    public static ServerEndpointConfig.Configurator sec = new ServerEndpointConfig.Configurator() {
-        @Override
-        public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
-            return (T) new WebsocketHandler();
+    private static Consumer<Context> websocketHandler = ctx -> {
+        WebsocketHandler handler = new WebsocketHandler(new WebsocketConnectionPool(), new Broker());
+        ServerContainer scon = (ServerContainer) ctx.getServletContext().getAttribute(ServerContainer.class.getName());
+        try {
+            scon.addEndpoint(ServerEndpointConfig
+                    .Builder
+                    .create(WebsocketHandler.class, "/chat")
+                    .configurator(new ServerEndpointConfig.Configurator() {
+                        @Override
+                        public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
+                            return (T) handler;
+                        }
+                    })
+                    .build());
+        } catch (final DeploymentException e) {
+            e.printStackTrace();
         }
     };
+
+//    public static ServerEndpointConfig.Configurator sec = new ServerEndpointConfig.Configurator() {
+//        @Override
+//        public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
+//            return (T) new WebsocketHandler();
+//        }
+//    };
 }

@@ -23,8 +23,8 @@ public class UsersController {
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
-                new Date(System.currentTimeMillis() + 1800000),
-                new Date()
+                new Date(System.currentTimeMillis() + 1800000).getTime(),
+                new Date().getTime()
         );
         return TokenProvider.encode(token);
     }
