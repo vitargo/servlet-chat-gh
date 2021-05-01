@@ -4,7 +4,6 @@ import com.github.chat.controllers.UsersController;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
 import com.github.chat.exceptions.BadRequest;
-import com.github.chat.payload.Token;
 import com.github.chat.utils.JsonHelper;
 
 import javax.servlet.ServletException;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 public class UsersHandler extends HttpServlet {
@@ -30,6 +28,7 @@ public class UsersHandler extends HttpServlet {
             throws ServletException,
             IOException {
         ServletOutputStream out = resp.getOutputStream();
+        System.out.println("GET req " + req);
         req.getAuthType();
         String result = this.usersController.auth(new UserAuthDto());
         String str = JsonHelper.toJson(result).orElseThrow(BadRequest::new);
@@ -41,8 +40,9 @@ public class UsersHandler extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletOutputStream out = resp.getOutputStream();
+        System.out.println("POST req" + req);
         String body = req.getReader().lines().collect(Collectors.joining());
-        if (!"application/json".equalsIgnoreCase(req.getHeader("Conten-Type"))) {
+        if (!"application/json".equalsIgnoreCase(req.getHeader("Content-Type"))) {
             resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Invalid content type");
         } else {
             String url = req.getRequestURI();
