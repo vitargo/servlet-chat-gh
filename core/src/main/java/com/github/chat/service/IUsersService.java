@@ -18,5 +18,5 @@ public interface IUsersService {
 
     User findAuth(UserAuthDto payload);
 
-    void insert(UserRegDto payload);
+    User insert(UserRegDto payload);
 }

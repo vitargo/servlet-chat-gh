@@ -6,6 +6,7 @@ import com.github.chat.entity.User;
 import com.github.chat.repository.UsersRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 public class UserService implements IUsersService{
 
@@ -41,11 +42,22 @@ public class UserService implements IUsersService{
 
     @Override
     public User findAuth(UserAuthDto payload) {
-        return null;
+        User result = this.cache.stream()
+                .filter(user ->
+                        user.getLogin().equals(payload.getLogin())
+                                && user.getPassword().equals(payload.getPassword())
+                ).findFirst().orElse(null);
+        if(Objects.isNull(result)){
+            result = this.repo.findAuth(payload);
+            this.cache.add(result);
+        }
+        return result;
     }
 
     @Override
-    public void insert(UserRegDto payload) {
-
+    public User insert(UserRegDto payload) {
+        User result = this.repo.save(payload);
+        this.cache.add(result);
+        return result;
     }
 }
