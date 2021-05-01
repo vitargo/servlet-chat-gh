@@ -8,6 +8,7 @@ public class UserRowMapper {
     public static CustomRowMapper<User> getRowMapper(){
         return resultSet -> new User(
                 resultSet.getLong("id"),
+                resultSet.getString("nickname"),
                 resultSet.getString("first_name"),
                 resultSet.getString("last_name"),
                 resultSet.getString("email"),

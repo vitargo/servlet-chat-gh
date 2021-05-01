@@ -29,23 +29,32 @@ public class WebsocketHandler {
     public void messages(Session session, String payload){
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
+            Token result;
+            long id;
             switch(env.getTopic()) {
                 case auth:
-                    Token result = TokenProvider.decode(env.getPayload());
+                    result = TokenProvider.decode(env.getPayload());
                     System.out.println(result);
-                    long id = result.getId();
-                    System.out.println(id);
-                    this.websocketConnectionPool.addSession(id, session);
+                    id = result.getId();
+                    this.websocketConnectionPool.addSession(id,session);
+                    broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
                 case message:
                     this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
+                    System.out.println(payload);
+                    break;
+                case disconnect:
+                    broker.broadcast(this.websocketConnectionPool.getSessions(), env);
+                    result = TokenProvider.decode(env.getPayload());
+                    id = result.getId();
+                    websocketConnectionPool.removeSession(id);
+                    websocketConnectionPool.getSession(id).close();
                     break;
                 default:
             }
-        }catch (Throwable e){
+        } catch (Throwable e){
             //todo: single send about error to user
             log.warn("Enter: {}", e.getMessage());
         }
     }
-
 }

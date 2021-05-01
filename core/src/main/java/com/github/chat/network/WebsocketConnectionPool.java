@@ -13,11 +13,15 @@ public class WebsocketConnectionPool {
         this.sessions.put(id, session);
     }
 
-    public void remove(long id) {
+    public List<Session> getSessions() {
+        return new ArrayList<>(this.sessions.values());
+    }
+
+    public void removeSession(long id) {
         this.sessions.remove(id);
     }
 
-    public List<Session> getSessions() {
-        return new ArrayList<>(this.sessions.values());
+    public Session getSession(long id) {
+        return this.sessions.get(id);
     }
 }

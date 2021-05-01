@@ -1,14 +1,16 @@
 package com.github.micro.orm;
 
-import com.github.micro.orm.exceptions.CustomSQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class CustomJdbcTemplate<T> {
+
+    private static final Logger log = LoggerFactory.getLogger(CustomJdbcTemplate.class);
 
     private final DataSource dataSource;
 
@@ -25,7 +27,7 @@ public class CustomJdbcTemplate<T> {
                 result.add(rm.rowMap(rs));
             }
         } catch (SQLException e) {
-            // TODO logger
+            log.error("Enter: {}", e.getMessage());
         }
         return result;
     }
@@ -39,7 +41,7 @@ public class CustomJdbcTemplate<T> {
                 result = rm.rowMap(rs);
             }
         } catch (SQLException e) {
-            // TODO logger
+            log.error("Enter: {}", e.getMessage());
         }
         return result;
     }
@@ -51,7 +53,7 @@ public class CustomJdbcTemplate<T> {
             ResultSet rs = stmt.executeQuery();
             result = re.extract(rs);
         } catch (SQLException e) {
-            // TODO logger
+            log.error("Enter: {}", e.getMessage());
         }
         return result;
     }
@@ -67,7 +69,7 @@ public class CustomJdbcTemplate<T> {
                 result = rm.rowMap(rs);
             }
         } catch (SQLException e) {
-            // TODO logger
+            log.error("Enter: {}", e.getMessage());
         }
         return result;
     }
@@ -84,7 +86,7 @@ public class CustomJdbcTemplate<T> {
                 result = rm.rowMap(rs);
             }
         } catch (SQLException e){
-            // TODO logger
+            log.error("Enter: {}", e.getMessage());
         }
         return  result;
     }
@@ -95,9 +97,8 @@ public class CustomJdbcTemplate<T> {
             setParameters(stmt, params);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            // TODO logger
+            log.error("Enter: {}", e.getMessage());
         }
-
     }
 
     private void setParameters(PreparedStatement statement, Object... params) {
@@ -106,10 +107,9 @@ public class CustomJdbcTemplate<T> {
                 try {
                     statement.setObject(i + 1, params[i]);
                 } catch (SQLException e) {
-                    // TODO logger
+                    log.error("Enter: {}", e.getMessage());
                 }
             }
         }
     }
-
 }

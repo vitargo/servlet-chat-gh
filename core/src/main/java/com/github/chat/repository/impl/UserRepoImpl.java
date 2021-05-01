@@ -18,18 +18,18 @@ public class UserRepoImpl implements UsersRepository {
 
     private CustomJdbcTemplate<User> customJdbcTemplate;
 
-    private final DataSource dataSource;
+    private DataSource dataSource;
 
     public UserRepoImpl(DataSource dataSource) {
         this.dataSource = dataSource;
         this.customJdbcTemplate = new CustomJdbcTemplate<>(this.dataSource);
     }
 
-
     @Override
     public User save(UserRegDto userRegDto) {
         String sql = "insert into "
                 + UserTable.tableName + " ("
+                + UserTable.nickname + ", "
                 + UserTable.firstName + ", "
                 + UserTable.lastName + ", "
                 + UserTable.login + ", "
@@ -39,6 +39,7 @@ public class UserRepoImpl implements UsersRepository {
                 + ") values (?, ?, ?, ?, ?, ?)";
         return customJdbcTemplate.insert(sql,
                 UserRowMapper.getRowMapper(),
+                userRegDto.getNickname(),
                 userRegDto.getFirstName(),
                 userRegDto.getLastName(),
                 userRegDto.getLogin(),

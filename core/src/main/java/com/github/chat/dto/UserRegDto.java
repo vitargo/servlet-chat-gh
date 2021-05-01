@@ -4,6 +4,10 @@ import java.util.Objects;
 
 public class UserRegDto {
 
+    private long id; //for Mock
+
+    private String nickname;
+
     private String firstName;
 
     private String lastName;
@@ -18,9 +22,14 @@ public class UserRegDto {
 
     private String phone;
 
+    private int role; //Mock
+
+
     public UserRegDto() {}
 
-    public UserRegDto(String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone) {
+
+    public UserRegDto(String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone) {
+        this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
@@ -28,6 +37,27 @@ public class UserRegDto {
         this.passwordConfirm = passwordConfirm;
         this.email = email;
         this.phone = phone;
+    }
+
+    public UserRegDto(long id, String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone, int role) {
+        this.id = id;
+        this.nickname = nickname;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.login = login;
+        this.password = password;
+        this.passwordConfirm = passwordConfirm;
+        this.email = email;
+        this.phone = phone;
+        this.role = role;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getFirstName() {
@@ -91,18 +121,19 @@ public class UserRegDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserRegDto that = (UserRegDto) o;
-        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(login, that.login) && Objects.equals(password, that.password) && Objects.equals(passwordConfirm, that.passwordConfirm) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone);
+        return Objects.equals(nickname, that.nickname) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(login, that.login) && Objects.equals(password, that.password) && Objects.equals(passwordConfirm, that.passwordConfirm) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, login, password, passwordConfirm, email, phone);
+        return Objects.hash(nickname, firstName, lastName, login, password, passwordConfirm, email, phone);
     }
 
     @Override
     public String toString() {
         return "UserRegDto{" +
-                "firstName='" + firstName + '\'' +
+                "nickname='" + nickname + '\'' +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +

@@ -6,6 +6,8 @@ public class UserTable {
 
     public static final String id = "id";
 
+    public static final String nickname = "nickname";
+
     public static final String firstName = "first_name";
 
     public static final String lastName = "last_name";
