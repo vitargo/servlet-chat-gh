@@ -17,12 +17,12 @@
   <input type="text" name="nickname" placeholder="Nickname" autofocus/>
   <input type="text" name="first_name" placeholder="First name" />
   <input type="text" name="last_name" placeholder="Last name" />
-  <input type="text" name="login" placeholder="Login" /></td>
+  <input type="text" name="login" placeholder="Login" />
   <input type="password" name="password" placeholder="Password"/>
   <input type="password" name="passwordConfirm" placeholder="Confirm your password" />
   <input type="text" name="email" placeholder="Email" />
   <input type="text" name="contact" placeholder="Phone number" />
-  <button class="button" onclick="signIn()">Sign In</button>
+  <button class="button" onclick="registration()">Sign In</button>
   <span class="error" id="registration-error"></span>
 </form>
 </body>

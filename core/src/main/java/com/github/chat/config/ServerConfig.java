@@ -26,13 +26,9 @@ public class ServerConfig {
         }
 
         tomcat.setPort(Integer.parseInt(webPort));
-        //Context ctx = tomcat.addWebapp("/", new File(".").getAbsolutePath());
-        File f = new File("web");
+
+        File f = new File("core/web");
         Context ctx = tomcat.addWebapp("", f.getAbsolutePath());
-
-        tomcat.addServlet("", "UserHandler", HandlerConfig.usersHandler());
-        ctx.addServletMappingDecoded("/users/*", "UserHandler");
-
         return new ServerRunner(tomcat, ctx, List.of(websocketHandler));
     }
 
@@ -54,11 +50,4 @@ public class ServerConfig {
             e.printStackTrace();
         }
     };
-
-//    public static ServerEndpointConfig.Configurator sec = new ServerEndpointConfig.Configurator() {
-//        @Override
-//        public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
-//            return (T) new WebsocketHandler();
-//        }
-//    };
 }
