@@ -38,7 +38,7 @@ public class UsersHandler extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Invalid content type");
         } else {
             String url = req.getRequestURI();
-            if (url.equals(".auth")) {
+            if (url.equals("/")) {
                 UserAuthDto payload = JsonHelper.fromJson(body, UserAuthDto.class).orElseThrow(BadRequest::new);
                 String result = this.usersController.auth(payload);
                 resp.setContentType("application/json");

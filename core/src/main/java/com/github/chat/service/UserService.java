@@ -5,6 +5,7 @@ import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.User;
 import com.github.chat.repository.UsersRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ public class UserService implements IUsersService{
 
     private final UsersRepository repo;
 
-    public List<User> cache;
+    public List<User> cache = new ArrayList<>();
 
     public UserService(UsersRepository repo) {
         this.repo = repo;

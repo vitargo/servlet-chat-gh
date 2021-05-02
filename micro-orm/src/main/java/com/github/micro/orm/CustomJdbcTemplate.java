@@ -36,6 +36,7 @@ public class CustomJdbcTemplate<T> {
         T result = null;
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
+            setParameters(stmt, params);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 result = rm.rowMap(rs);

@@ -67,12 +67,15 @@ public class UserRepoImpl implements UsersRepository {
         String sql = "select * from "
                 + UserTable.tableName + " where "
                 + UserTable.login + " = ?";
+        System.out.println("Login" + userAuthDto.getLogin());
+        System.out.println("Password" + userAuthDto.getPassword());
         try {
             User result = customJdbcTemplate.findBy(
                     sql,
                     UserRowMapper.getRowMapper(),
                     userAuthDto.getLogin()
             );
+
             if(userAuthDto.getPassword().equals(result.getPassword())){
                 return result;
             } else {
