@@ -47,7 +47,20 @@ button:focus {
     margin-bottom: 10px;
 }
 
-#authentication .error {
+/* Registration */
+
+#registration {
+    margin-top: 100px;
+}
+
+#registration * {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+#registration .error {
     text-align: center;
 }
 

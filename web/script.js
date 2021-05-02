@@ -7,11 +7,13 @@ function signIn() {
     var credentials = {
         username: document.getElementById("username").value,
         password: document.getElementById("password").value
-    };
 
+    };
+    console.log(credentials);
     var request = new XMLHttpRequest();
-    request.open("POST", "http://localhost:8080/auth");
+    request.open("POST", "http://localhost:8081/auth");
     request.setRequestHeader("Content-Type", "application/json");
+    console.log(request);
 
     request.onreadystatechange = function () {
 
@@ -38,6 +40,8 @@ function signIn() {
 
     request.send(JSON.stringify(credentials));
 }
+
+function registration() {}
 
 function openSocket(accessToken) {
 
