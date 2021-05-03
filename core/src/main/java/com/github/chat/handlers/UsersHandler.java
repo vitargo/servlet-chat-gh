@@ -26,7 +26,7 @@ public class UsersHandler extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
         System.out.println("Request: " + req.getMethod());
-        RequestDispatcher rd = req.getRequestDispatcher("index.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("index.html");
         rd.include(req, resp);
     }
 
@@ -51,7 +51,7 @@ public class UsersHandler extends HttpServlet {
                     dispatcher.forward(req, resp);
                 } else {
                     resp.setStatus(403);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
                     out = resp.getWriter();
                     out.println("<font color=red>Either user name or password is wrong. Status " + resp.getStatus() + "! </font>");
                     rd.include(req, resp);
@@ -62,13 +62,13 @@ public class UsersHandler extends HttpServlet {
                 boolean result = this.usersController.reg(payload);
                 if (result){
                     resp.setStatus(200);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
                     out = resp.getWriter();
                     out.println("<font color=greed>Registration is successful! Please login. Status " + resp.getStatus() + "! </font>");
                     rd.include(req, resp);
                 } else {
                     resp.setStatus(403);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
                     out = resp.getWriter();
                     out.println("<font color=red>Registration failed. User is already exist! Status " + resp.getStatus() + "! </font>");
                     rd.include(req, resp);

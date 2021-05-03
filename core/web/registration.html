@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>PinkLink Chat</title>
+  <meta name="description" content="Servlet chat application">
+  <meta name="author" content="PinkLink Team">
+  <link rel="stylesheet" href="./style.css">
+  <script acync type="text/javascript" src="script.js"></script>
+</head>
+<body>
+<div id="title">PinkLink Registration Form</div>
+<a href="/main.html">Chat</a>
+<form id="registration" action="UserHandler" method="post">
+  <input type="text" id="username" placeholder="Username" autofocus/>
+  <input type="text" id="nickname" name="nickname" placeholder="Nickname" autofocus/>
+  <input type="text" id="first_name" name="first_name" placeholder="First name"/>
+  <input type="text" id="last_name" name="last_name" placeholder="Last name"/>
+  <input type="text" id="login" name="login" placeholder="Login"/>
+  <input type="password" id="password" name="password" placeholder="Password"/>
+  <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm your password"/>
+  <input type="text" id="email" name="email" placeholder="Email"/>
+  <input type="text" id="contact" name="contact" placeholder="Phone number"/>
+  <button class="button" onclick="registration()">Sign In</button>
+  <span class="error" id="registration-error"></span>
+</form>
+</body>
+<script>
+  // эта функция сработает при нажатии на кнопку
+  function registration() {
+    let username = document.querySelector('#username');
+    let nickname = document.querySelector('#nickname');
+    let first_name = document.querySelector('#first_name');
+    let last_name = document.querySelector('#last_name');
+    let login = document.querySelector('#login');
+    let password = document.querySelector('#password');
+    let passwordConfirm = document.querySelector('#passwordConfirm');
+    let email = document.querySelector('#email');
+    let contact = document.querySelector('#contact');
+    let xhr = new XMLHttpRequest();
+    let url = "http://localhost:8081/auth";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        result.innerHTML = this.responseText;
+      }
+    };
+    var data = JSON.stringify({
+      "username": username.value,
+      "nickname": nickname.value,
+      "first_name": first_name.value,
+      "last_name": last_name.value,
+      "login": login.value,
+      "password": password.value,
+      "passwordConfirm": passwordConfirm.value,
+      "email": email.value,
+      "contact": contact.value,
+    });
+    xhr.send(data);
+  }
+</script>
+</html>

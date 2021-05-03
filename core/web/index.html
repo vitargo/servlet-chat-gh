@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>PinkLink Chat</title>
+    <meta name="description" content="Servlet chat application">
+    <meta name="author" content="PinkLink Team">
+    <link type="text/css" rel="stylesheet" href="./style.css"/>
+</head>
+<body>
+
+<div id="title">PinkLink Chat</div>
+<div style="text-align: right;">
+    <span>Have not account! Sign up here</span>
+    <a href="/reg">Registration form</a>
+</div>
+<form id="authentication" action="UserHandler" method="post" onsubmit="return false;">
+    <input type="text" id="login" placeholder="Login" autofocus/>
+    <input type="password" id="password" placeholder="Password"/>
+    <button class="button" onclick="signIn()">Confirm</button>
+    <span class="error" id="authentication-error"></span>
+</form>
+</body>
+<script>
+    // эта функция сработает при нажатии на кнопку
+    function signIn() {
+        let login = document.querySelector('#login');
+        let password = document.querySelector('#password');
+        let result = document.querySelector('.result');
+        let xhr = new XMLHttpRequest();
+        let url = "http://localhost:8081/auth";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                result.innerHTML = this.responseText;
+            }
+        };
+        var data = JSON.stringify({ "login": login.value, "password": password.value });
+        xhr.send(data);
+    }
+</script>
+</html>

@@ -16,7 +16,7 @@ public class ChatServlet extends HttpServlet{
         System.out.println("Enter doPost ChatServlet");
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/main.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/main.html");
         dispatcher.include(request, response);
         out.close();
     }
