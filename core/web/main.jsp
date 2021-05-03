@@ -14,13 +14,15 @@
 
 <div id="contacts"></div>
 
-<div id="chat">
-  <div id="messages"></div>
-  <form id="chat-controls" onsubmit="return false;">
-    <input type="text" id="message" placeholder="Enter a message"/>
-    <button class="button" onclick="sendMessage()">Send</button>
-  </form>
-</div>
+<h1>SUCCESS!</h1>
+
+<%--<div id="chat">--%>
+<%--  <div id="messages"></div>--%>
+<%--  <form id="chat-controls" onsubmit="return false;">--%>
+<%--    <input type="text" id="message" placeholder="Enter a message"/>--%>
+<%--    <button class="button" onclick="sendMessage()">Send</button>--%>
+<%--  </form>--%>
+<%--</div>--%>
 
 </body>
 </html>

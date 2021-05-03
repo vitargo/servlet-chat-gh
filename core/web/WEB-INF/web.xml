@@ -5,7 +5,7 @@
          version="4.0">
     <display-name>HomeworkServlet</display-name>
     <welcome-file-list>
-        <welcome-file>/WEB-INF/one.html</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
     <servlet>
         <servlet-name>UserHandler</servlet-name>
@@ -16,4 +16,20 @@
         <servlet-name>UserHandler</servlet-name>
         <url-pattern></url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ChatServlet</servlet-name>
+        <servlet-class>com.github.chat.handlers.ChatServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChatServlet</servlet-name>
+        <url-pattern>/chat</url-pattern>
+    </servlet-mapping>
+<!--    <filter>-->
+<!--        <filter-name>AuthenticationFilter</filter-name>-->
+<!--        <filter-class>com.github.chat.handlers.AuthenticationFilter</filter-class>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>AuthenticationFilter</filter-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
 </web-app>

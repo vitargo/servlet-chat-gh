@@ -22,13 +22,21 @@ public class UserRegDto {
 
     private String phone;
 
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
+
     private int role; //Mock
 
 
     public UserRegDto() {}
 
 
-    public UserRegDto(String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone) {
+    public UserRegDto(String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone, int role) {
         this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -37,6 +45,7 @@ public class UserRegDto {
         this.passwordConfirm = passwordConfirm;
         this.email = email;
         this.phone = phone;
+        this.role = role;
     }
 
     public UserRegDto(long id, String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone, int role) {

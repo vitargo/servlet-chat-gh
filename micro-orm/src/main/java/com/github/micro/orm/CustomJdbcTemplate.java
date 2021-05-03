@@ -63,6 +63,7 @@ public class CustomJdbcTemplate<T> {
         T result = null;
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
+            setParameters(stmt, params);
             int row = stmt.executeUpdate();
             if (row != 0) {
                 ResultSet rs = stmt.getGeneratedKeys();

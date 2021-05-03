@@ -1,20 +1,25 @@
 package com.github.chat.repository.impl;
 
+import com.github.chat.controllers.UsersController;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.User;
-import com.github.micro.orm.exceptions.CustomSQLException;
 import com.github.chat.exceptions.LoginException;
-import com.github.chat.exceptions.PasswordException;
 import com.github.chat.repository.UsersRepository;
 import com.github.chat.repository.userTable.UserRowMapper;
 import com.github.chat.repository.userTable.UserTable;
 import com.github.micro.orm.CustomJdbcTemplate;
+import com.github.micro.orm.exceptions.CustomSQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Objects;
 
 public class UserRepoImpl implements UsersRepository {
+
+    private static final Logger log = LoggerFactory.getLogger(UsersController.class);
 
     private CustomJdbcTemplate<User> customJdbcTemplate;
 
@@ -35,8 +40,9 @@ public class UserRepoImpl implements UsersRepository {
                 + UserTable.login + ", "
                 + UserTable.email + ", "
                 + UserTable.phone + ", "
-                + UserTable.password
-                + ") values (?, ?, ?, ?, ?, ?)";
+                + UserTable.password + ", "
+                +UserTable.role
+                + ") values (?, ?, ?, ?, ?, ?, ?, ?)";
         return customJdbcTemplate.insert(sql,
                 UserRowMapper.getRowMapper(),
                 userRegDto.getNickname(),
@@ -45,7 +51,8 @@ public class UserRepoImpl implements UsersRepository {
                 userRegDto.getLogin(),
                 userRegDto.getEmail(),
                 userRegDto.getPhone(),
-                userRegDto.getPassword()
+                userRegDto.getPassword(),
+                userRegDto.getRole()
         );
     }
 
@@ -67,19 +74,19 @@ public class UserRepoImpl implements UsersRepository {
         String sql = "select * from "
                 + UserTable.tableName + " where "
                 + UserTable.login + " = ?";
-        System.out.println("Login" + userAuthDto.getLogin());
-        System.out.println("Password" + userAuthDto.getPassword());
         try {
+
             User result = customJdbcTemplate.findBy(
                     sql,
                     UserRowMapper.getRowMapper(),
                     userAuthDto.getLogin()
             );
 
-            if(userAuthDto.getPassword().equals(result.getPassword())){
-                return result;
+            if(Objects.isNull(result) || !userAuthDto.getPassword().equals(result.getPassword())){
+                log.error("Wrong password for user " + userAuthDto.getLogin());
+                return null;
             } else {
-                throw new PasswordException("Wrong password for user " + userAuthDto.getLogin());
+                return result;
             }
         } catch (CustomSQLException e) {
             throw new CustomSQLException(e.getMessage());
