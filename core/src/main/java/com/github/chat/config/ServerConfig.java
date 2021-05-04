@@ -6,6 +6,7 @@ import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.utils.ServerRunner;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.websocket.server.WsContextListener;
 
 import javax.servlet.ServletException;
 import javax.websocket.DeploymentException;
@@ -27,8 +28,13 @@ public class ServerConfig {
 
         tomcat.setPort(Integer.parseInt(webPort));
 
+        tomcat.getHost().setAppBase(".");
+
         File f = new File("core/web");
         Context ctx = tomcat.addWebapp("", f.getAbsolutePath());
+        tomcat.addServlet("","UserHandler",HandlerConfig.usersHandler()).setAsyncSupported(true);
+        ctx.addServletMappingDecoded("/chat/*", "UserHandler");
+        ctx.addApplicationListener(WsContextListener.class.getName());
         return new ServerRunner(tomcat, ctx, List.of(websocketHandler));
     }
 

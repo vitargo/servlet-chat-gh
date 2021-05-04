@@ -69,5 +69,5 @@ public class Token implements Serializable {
    // {"id":1,"first_name":"Aaaa","last_name":"Bbbb","expire_in":1619646590519,"createdAt":1619646590519}
     //{"topic":"message","payload":"{"id":1,"first_name":"Aaaa","last_name":"Bbbb","expire_in":1619646590519,"createdAt":1619646590519}"}
     //{"topic":"auth","payload":"{"id":1,"first_name":"Aaaa","last_name":"Bbbb","expire_in":1619646590519,"createdAt":1619646590519}"}
-//{"topic":"auth","payload":"{"id":1,"first_name":"Aaaa","last_name":"Bbbb","expire_in":1619646590519,"createdAt":1619646590519}"}
+//{"topic":"auth","payload":"IwiGsRqn33qm3j8zy/Ann4kJbGlqucq44nqJNbTjAOS7PQFxHEkKkt175V7ogm5NC6xTwkHqbk5Icu6ItOE0e7w+qdGkm5IISRiATbZRDbuFe9I8SrnaygQMR215HnEny7clPZPhD+PDO1R+QRSPnA=="}
 }

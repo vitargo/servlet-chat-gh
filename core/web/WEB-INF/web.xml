@@ -3,27 +3,27 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-    <display-name>HomeworkServlet</display-name>
-    <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
-    </welcome-file-list>
-    <servlet>
-        <servlet-name>UserHandler</servlet-name>
-        <servlet-class>com.github.chat.handlers.UsersHandler</servlet-class>
+<!--    <display-name>HomeworkServlet</display-name>-->
+<!--    <welcome-file-list>-->
+<!--        <welcome-file>index.html</welcome-file>-->
+<!--    </welcome-file-list>-->
+<!--    <servlet>-->
+<!--        <servlet-name>UserHandler</servlet-name>-->
+<!--        <servlet-class>com.github.chat.handlers.UsersHandler</servlet-class>-->
 
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UserHandler</servlet-name>
-        <url-pattern></url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>ChatServlet</servlet-name>
-        <servlet-class>com.github.chat.handlers.ChatServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ChatServlet</servlet-name>
-        <url-pattern>/chat</url-pattern>
-    </servlet-mapping>
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>UserHandler</servlet-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </servlet-mapping>-->
+<!--    <servlet>-->
+<!--        <servlet-name>ChatServlet</servlet-name>-->
+<!--        <servlet-class>com.github.chat.handlers.ChatServlet</servlet-class>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>ChatServlet</servlet-name>-->
+<!--        <url-pattern>/chat</url-pattern>-->
+<!--    </servlet-mapping>-->
 <!--    <filter>-->
 <!--        <filter-name>AuthenticationFilter</filter-name>-->
 <!--        <filter-class>com.github.chat.handlers.AuthenticationFilter</filter-class>-->
