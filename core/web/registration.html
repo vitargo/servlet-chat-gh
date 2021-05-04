@@ -11,7 +11,7 @@
 <body>
 <div id="title">PinkLink Registration Form</div>
 <a href="/main.html">Chat</a>
-<form id="registration" action="UserHandler" method="post">
+<form id="registration" method="post">
   <input type="text" id="username" placeholder="Username" autofocus/>
   <input type="text" id="nickname" name="nickname" placeholder="Nickname" autofocus/>
   <input type="text" id="first_name" name="first_name" placeholder="First name"/>
@@ -28,8 +28,8 @@
 <script>
   // эта функция сработает при нажатии на кнопку
   function registration() {
-    let username = document.querySelector('#username');
     let nickname = document.querySelector('#nickname');
+    let username = document.querySelector('#username');
     let first_name = document.querySelector('#first_name');
     let last_name = document.querySelector('#last_name');
     let login = document.querySelector('#login');
@@ -38,7 +38,8 @@
     let email = document.querySelector('#email');
     let contact = document.querySelector('#contact');
     let xhr = new XMLHttpRequest();
-    let url = "http://localhost:8081/auth";
+    console.log("    csdfds");
+    let url = "http://localhost:8081/";
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
@@ -47,15 +48,15 @@
       }
     };
     var data = JSON.stringify({
-      "username": username.value,
       "nickname": nickname.value,
-      "first_name": first_name.value,
-      "last_name": last_name.value,
+      "firstName": first_name.value,
+      "lastName": last_name.value,
       "login": login.value,
       "password": password.value,
       "passwordConfirm": passwordConfirm.value,
       "email": email.value,
-      "contact": contact.value,
+      "phone": contact.value,
+      "role": "1"
     });
     xhr.send(data);
   }

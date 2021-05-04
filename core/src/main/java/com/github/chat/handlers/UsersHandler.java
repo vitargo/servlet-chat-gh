@@ -26,7 +26,7 @@ public class UsersHandler extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
         System.out.println("Request: " + req.getMethod());
-        RequestDispatcher rd = req.getRequestDispatcher("index.html");
+        RequestDispatcher rd = req.getRequestDispatcher("registration.html");
         rd.include(req, resp);
     }
 
