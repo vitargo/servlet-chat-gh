@@ -278,6 +278,7 @@
             }
         };
         var data = JSON.stringify({ "login": login.value, "password": password.value });
+        currentUser = login.value;
         xhrs.send(data);
         console.log("responseXML"+xhrs.responseXML);
         console.log("resp  "+xhrs.response.token);
@@ -289,6 +290,7 @@
         socket = new WebSocket("ws://localhost:8081/chat");
         xhrs.onload = function () {
             var au = JSON.stringify({"topic":"auth","payload":xhrs.response});
+            console.log(au);
             socket.send(au);
         }
 
@@ -299,12 +301,20 @@
             document.getElementById("message").focus();
         };
 
+
         socket.onmessage = onMessage;
     }
 
     var onMessage = function(event) {
-        var data = event.data;
-        displayMessage(currentUser,data);
+        var webSocketMessage = JSON.parse(event.data);
+        switch (webSocketMessage.topic) {
+            case "auth":
+                displayConnectedUserMessage(currentUser);
+                break;
+            case "sendTextMessage":
+                displayMessage(currentUser,data);
+                break;
+        }
     };
 
     function sendMessage() {
