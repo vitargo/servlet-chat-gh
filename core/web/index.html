@@ -5,8 +5,7 @@
     <title>PinkLink Chat</title>
     <meta name="description" content="Servlet chat application">
     <meta name="author" content="PinkLink Team">
-<!--    <link type="text/css" rel="stylesheet" href="./style.css"/>-->
-<!--    <base href = "http://localhost:8081/chat/auth"/>-->
+
     <style>
         * {
             margin: 0;
@@ -33,7 +32,7 @@
             padding: 10px;
             background-color: rgba(255, 105, 180, 0.93);
             color: #fff;
-            width: 6em;
+            width: 13em;
             border: 2px solid #ff69b4;
         }
 
@@ -41,6 +40,22 @@
         button:focus {
             background-color: #ff1493;
             border-color: #ff1493;
+            cursor: pointer;
+        }
+
+        button2 {
+            border-radius: 20px;
+            padding: 10px;
+            color: #fff;
+            width: 13em;
+            background-color:grey;
+            border: 2px solid grey;
+        }
+
+        button2:hover,
+        button2:focus {
+            background-color: darkgrey;
+            border-color: darkgray;
             cursor: pointer;
         }
 
@@ -55,6 +70,10 @@
             margin-left: auto;
             margin-right: auto;
             margin-bottom: 10px;
+        }
+
+        #authentication .error {
+            text-align: center;
         }
 
         /* Registration */
@@ -116,6 +135,7 @@
             width: calc(100% - 160px);
             display: none;
         }
+
 
         #messages {
             min-height: calc(100vh - 130px);
@@ -217,14 +237,23 @@
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function (){
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                //url = window.location.replace("http://localhost:8081/chat/pinklink");
-                currentUser = login;
-                var webSocketAccessToken = xhr.responseText;
-                openSocket(webSocketAccessToken.token);
-                //result.innerHTML = this.responseText;
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                switch (xhr.status) {
+                    case 200:
+                        currentUser = login;
+                        var webSocketAccessToken = xhr.responseText;
+                        openSocket(webSocketAccessToken.token);
+                        break;
+                    case 403:
+                        currentUser = null;
+                        document.getElementById("authentication-error").innerHTML = "Oops... These credentials are invalid.";
+                        break;
+                    default:
+                        document.getElementById("authentication-error").innerHTML = "Oops... Looks like something is broken.";
+                }
             }
         };
+
         var data = JSON.stringify({ "login": login.value, "password": password.value });
         xhr.send(data);
     }
@@ -384,14 +413,15 @@
 <body>
 
 <div id="title">PinkLink Chat</div>
-<div style="text-align: right;">
-    <span>Have not account! Sign up here</span>
-    <a href="/reg">Registration form</a>
-</div>
+
 <form id="authentication" action="UserHandler" method="post" onsubmit="return false;">
+    <div style="text-align: right;">
+        <a href="/reg">Sing up!</a>
+</div>
     <input type="text" id="login" placeholder="Login" autofocus/>
     <input type="password" id="password" placeholder="Password"/>
-    <button class="button" onclick="signIn()">Confirm</button>
+    <button class="button" onclick="signIn()">Sign in</button>
+    <button class="button2" onclick="window.location.href='/chat/reg'">Registration</button>
     <span class="error" id="authentication-error"></span>
 </form>
 

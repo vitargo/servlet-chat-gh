@@ -46,8 +46,14 @@ public class UsersHandler extends HttpServlet {
             throws IOException, ServletException {
         System.out.println("Request: " + req.getMethod());
         System.out.println("3 - " + req.getRequestURI());
-        RequestDispatcher view = req.getRequestDispatcher("/index.html");
-        view.forward(req, resp);
+        String url = req.getRequestURI();
+        if (url.equals("/chat/reg")) {
+            RequestDispatcher view = req.getRequestDispatcher("/registration.html");
+            view.forward(req, resp);
+        } else {
+            RequestDispatcher view = req.getRequestDispatcher("/index.html");
+            view.forward(req, resp);
+        }
     }
 
     @Override
@@ -69,19 +75,11 @@ public class UsersHandler extends HttpServlet {
                 if (!Objects.isNull(result)){
                     resp.setContentType("text/html");
                     resp.setStatus(200);
-                    resp.addHeader("Authorization", result);
                     out.write(result);
-//                    RequestDispatcher dispatcher = req.getRequestDispatcher("/chat");
-//                    dispatcher.forward(req, resp);
-//                    RequestDispatcher view = req.getRequestDispatcher("/main.html");
-//                    view.forward(req, resp);
-
                 } else {
                     resp.setStatus(403);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
-                    out = resp.getWriter();
-                    out.println("<font color=red>Either user name or password is wrong. Status " + resp.getStatus() + "! </font>");
-                    rd.include(req, resp);
+                    RequestDispatcher view = req.getRequestDispatcher("/index.html");
+                    view.include(req, resp);
                 }
             }
             if (url.equals("/chat/reg")) {
