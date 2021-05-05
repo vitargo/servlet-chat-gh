@@ -312,7 +312,7 @@
                 displayConnectedUserMessage(currentUser);
                 break;
             case "sendTextMessage":
-                displayMessage(currentUser,data);
+                displayMessage(currentUser,webSocketMessage.payload);
                 break;
         }
     };
@@ -331,6 +331,7 @@
         webSocketMessage.payload = payload;
 
         socket.send(JSON.stringify(webSocketMessage));
+        socket.onmessage = onMessage;
     }
 
     function displayMessage(username, text) {
