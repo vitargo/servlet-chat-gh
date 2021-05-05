@@ -75,6 +75,7 @@ public class UsersHandler extends HttpServlet {
                 if (!Objects.isNull(result)){
                     resp.setContentType("text/html");
                     resp.setStatus(200);
+                    System.out.println(result);
                     out.write(result);
                 } else {
                     resp.setStatus(403);

@@ -33,13 +33,15 @@ public class WebsocketHandler {
             long id;
             switch(env.getTopic()) {
                 case auth:
+                    System.out.println(env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
-                    System.out.println(result);
+                    System.out.println("Я дошёл до авторизации");
                     id = result.getId();
+                    System.out.println("id="+id);
                     this.websocketConnectionPool.addSession(id,session);
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
-                case message:
+                case sendTextMessage:
                     this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     System.out.println(payload);
                     break;

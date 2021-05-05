@@ -226,6 +226,7 @@
 <script>
     var socket;
     var currentUser;
+    var Token
     // эта функция сработает при нажатии на кнопку
     function signIn() {
         let login = document.querySelector('#login');
@@ -242,6 +243,8 @@
                     case 200:
                         currentUser = login;
                         var webSocketAccessToken = xhr.responseText;
+                        Token = webSocketAccessToken.token;
+                        console.log(webSocketAccessToken.token);
                         openSocket(webSocketAccessToken.token);
                         break;
                     case 403:
@@ -256,14 +259,38 @@
 
         var data = JSON.stringify({ "login": login.value, "password": password.value });
         xhr.send(data);
+        console.log(xhr.readyState);
+    }
+    function connectTo(){
+        console.log(JSON.stringify({"topic":"auth","payload":"" + Token }));
+        socket.send(JSON.stringify({"topic":"auth","payload":"" + Token }));
     }
     function openSocket(accessToken) {
+        let login = document.querySelector('#login');
+        let password = document.querySelector('#password');
+        let xhrs = new XMLHttpRequest();
+        xhrs.open("POST", "http://localhost:8081/chat/auth", true);
+        xhrs.setRequestHeader("Content-Type", "application/json");
+        xhrs.onreadystatechange = function () {
+            if (xhrs.readyState === 4 && xhrs.status === 200) {
+                result.innerHTML = this.responseText;
+                console.log(this.responseText);
+            }
+        };
+        var data = JSON.stringify({ "login": login.value, "password": password.value });
+        xhrs.send(data);
+        console.log("responseXML"+xhrs.responseXML);
+        console.log("resp  "+xhrs.response.token);
+        console.log("openSocket");
 
         if (socket) {
             socket.close();
         }
-        var au = JSON.stringify({"topic":"auth","payload":"" + accessToken + "\""});
         socket = new WebSocket("ws://localhost:8081/chat");
+        xhrs.onload = function () {
+            var au = JSON.stringify({"topic":"auth","payload":xhrs.response});
+            socket.send(au);
+        }
 
         socket.onopen = function (event) {
             document.getElementById("authentication").style.display = "none";
@@ -272,50 +299,23 @@
             document.getElementById("message").focus();
         };
 
-        socket.onmessage = function (event) {
-
-            if (typeof event.data === "string") {
-
-                var webSocketMessage = JSON.parse(event.data);
-                switch (webSocketMessage.type) {
-
-                    case "welcomeUser":
-                        displayConnectedUserMessage(webSocketMessage.payload.username);
-                        break;
-
-                    case "broadcastTextMessage":
-                        displayMessage(webSocketMessage.payload.username, webSocketMessage.payload.content);
-                        break;
-
-                    case "broadcastConnectedUser":
-                        displayConnectedUserMessage(webSocketMessage.payload.username);
-                        break;
-
-                    case "broadcastDisconnectedUser":
-                        displayDisconnectedUserMessage(webSocketMessage.payload.username);
-                        break;
-
-                    case "broadcastAvailableUsers":
-                        cleanAvailableUsers();
-                        for (var i = 0; i < webSocketMessage.payload.usernames.length; i++) {
-                            addAvailableUsers(webSocketMessage.payload.usernames[i]);
-                        }
-                        break;
-                }
-            }
-        };
+        socket.onmessage = onMessage;
     }
+
+    var onMessage = function(event) {
+        var data = event.data;
+        displayMessage(currentUser,data);
+    };
+
     function sendMessage() {
 
         var text = document.getElementById("message").value;
         document.getElementById("message").value = "";
 
-        var payload = {
-            content: text
-        };
+        var payload = text;
 
         var webSocketMessage = {
-            type: "sendTextMessage"
+            topic: "sendTextMessage"
         };
 
         webSocketMessage.payload = payload;
@@ -409,6 +409,8 @@
     }
 
 
+
+
 </script>
 <body>
 
@@ -432,6 +434,7 @@
     <form id="chat-controls" onsubmit="return false;">
         <input type="text" id="message" placeholder="Enter a message"/>
         <button class="button" onclick="sendMessage()">Send</button>
+        <button class="button" onclick="connectTo()">Connect</button>
     </form>
 </div>
 
