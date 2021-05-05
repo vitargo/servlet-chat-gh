@@ -26,14 +26,9 @@ public class JsonHelperTest {
     public void toJson2() {
         Token token = new Token(1L, "Aaaa", "Bbbb", new Date().getTime(), new Date().getTime());
         String data = TokenProvider.encode(token);
-        System.out.println("1----" + data);
         Envelope env = new Envelope(Topic.auth, data);
-        System.out.println("2-----" + env);
         String result = JsonHelper.toJson(env).get();
         Optional<String> result2 = JsonHelper.toJson(token);
-        System.out.println("3-------" + result);
-        System.out.println("4-----" + result2);
-        //String act = result.get();
         Envelope acte = JsonHelper.fromJson(result, Envelope.class).get();
         Assert.assertEquals(env, acte);
     }

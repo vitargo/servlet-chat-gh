@@ -32,7 +32,6 @@ public class TokenProvider {
             throw new CryptoException ("Empty token!");
         }
         String str = JsonHelper.toJson(t).get();
-        System.out.println(str);
         try {
             IvParameterSpec ivspec = new IvParameterSpec(iv);
 

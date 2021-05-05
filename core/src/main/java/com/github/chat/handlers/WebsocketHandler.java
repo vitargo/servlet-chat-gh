@@ -35,15 +35,12 @@ public class WebsocketHandler {
                 case auth:
                     System.out.println(env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
-                    System.out.println("Я дошёл до авторизации");
                     id = result.getId();
-                    System.out.println("id="+id);
                     this.websocketConnectionPool.addSession(id,session);
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
                 case sendTextMessage:
                     this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
-                    System.out.println(payload);
                     break;
                 case disconnect:
                     broker.broadcast(this.websocketConnectionPool.getSessions(), env);
@@ -55,7 +52,6 @@ public class WebsocketHandler {
                 default:
             }
         } catch (Throwable e){
-            //todo: single send about error to user
             log.warn("Enter: {}", e.getMessage());
         }
     }

@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 
 public class UsersHandler extends HttpServlet {
 
-//    private final UsersController usersController = ControllerConfig.usersController();
-//
     private final UsersController usersController;
 
     public UsersHandler(UsersController usersController) {
@@ -30,10 +28,6 @@ public class UsersHandler extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try{
-            String url = req.getRequestURI();
-            System.out.println("1 - " + url);
-            String method = req.getMethod();
-            System.out.println("2 - " + method);
             super.service(req, resp);
         } catch (BadRequest e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid body");
@@ -44,8 +38,6 @@ public class UsersHandler extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
-        System.out.println("Request: " + req.getMethod());
-        System.out.println("3 - " + req.getRequestURI());
         String url = req.getRequestURI();
         if (url.equals("/chat/reg")) {
             RequestDispatcher view = req.getRequestDispatcher("/registration.html");
@@ -58,24 +50,18 @@ public class UsersHandler extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        System.out.println("POST req " + req);
-        String url1 = req.getRequestURI();
-        System.out.println("4 - " + url1);
         PrintWriter out = resp.getWriter();
         String body = req.getReader().lines().collect(Collectors.joining());
         if (!"application/json".equalsIgnoreCase(req.getHeader("Content-Type"))) {
             resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Invalid content type");
         } else {
             String url = req.getRequestURI();
-            System.out.println("5 - " + url);
             if (url.equals("/chat/auth")) {
                 UserAuthDto payload = JsonHelper.fromJson(body, UserAuthDto.class).orElseThrow(BadRequest::new);
                 String result = this.usersController.auth(payload);
-                System.out.println(result);
                 if (!Objects.isNull(result)){
                     resp.setContentType("text/html");
                     resp.setStatus(200);
-                    System.out.println(result);
                     out.write(result);
                 } else {
                     resp.setStatus(403);
