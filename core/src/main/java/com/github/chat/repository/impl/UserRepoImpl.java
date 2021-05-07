@@ -24,13 +24,14 @@ public class UserRepoImpl implements UsersRepository {
     private CustomJdbcTemplate<User> customJdbcTemplate;
 
     private DataSource dataSource;
-
+    //TODO add CustomJdbcTemplate to param
     public UserRepoImpl(DataSource dataSource) {
         this.dataSource = dataSource;
         this.customJdbcTemplate = new CustomJdbcTemplate<>(this.dataSource);
     }
 
     @Override
+    //TODO change param on User
     public User save(UserRegDto userRegDto) {
         String sql = "insert into "
                 + UserTable.tableName + " ("
@@ -118,7 +119,7 @@ public class UserRepoImpl implements UsersRepository {
             throw new LoginException(e.getMessage());
         }
     }
-
+    //TODO void
     @Override
     public User update(User user) {
         String sql = "update "

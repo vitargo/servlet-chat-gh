@@ -9,7 +9,6 @@ import com.github.chat.utils.TokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
 import java.util.Objects;
 
 public class UsersController {
@@ -29,8 +28,8 @@ public class UsersController {
                     user.getId(),
                     user.getFirstName(),
                     user.getLastName(),
-                    new Date(System.currentTimeMillis() + 1800000).getTime(),
-                    new Date().getTime()
+                    System.currentTimeMillis() + 1800000,
+                    System.currentTimeMillis()
             );
             log.info("Generate cipher token!");
             return TokenProvider.encode(token);

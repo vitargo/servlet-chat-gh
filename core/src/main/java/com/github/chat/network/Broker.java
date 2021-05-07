@@ -23,7 +23,7 @@ public class Broker {
             }
         });
     }
-
+    //TODO add send method for 1 session
     public void send(Session session, Envelope payload){
 
     }
