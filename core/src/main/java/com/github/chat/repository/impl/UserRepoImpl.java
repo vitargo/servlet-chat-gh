@@ -70,6 +70,7 @@ public class UserRepoImpl implements UsersRepository {
     }
 
     @Override
+    //TODO change param on User
     public User findAuth(UserAuthDto userAuthDto) {
         String sql = "select * from "
                 + UserTable.tableName + " where "
@@ -96,6 +97,7 @@ public class UserRepoImpl implements UsersRepository {
     }
 
     @Override
+    //TODO change param on User
     public User findReg(UserRegDto userRegDto) {
         String sql = "select * from "
                 + UserTable.tableName + " where "
