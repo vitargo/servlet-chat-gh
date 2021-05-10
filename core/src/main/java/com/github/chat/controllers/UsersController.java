@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
+import static com.github.chat.utils.TransferObject.toUser;
+
 public class UsersController {
 
     private static final Logger log = LoggerFactory.getLogger(UsersController.class);
@@ -21,14 +23,15 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    public String auth(UserAuthDto payload){
-        User user = this.usersService.findAuth(payload);
-        if (!Objects.isNull(user)){
+    public String auth(UserAuthDto payload) {
+        User user = this.usersService.findUser(toUser(payload));
+        if (!Objects.isNull(user)) {
+            int LIFETIME = 1800000;
             Token token = new Token(
                     user.getId(),
                     user.getFirstName(),
                     user.getLastName(),
-                    System.currentTimeMillis() + 1800000,
+                    System.currentTimeMillis() + LIFETIME,
                     System.currentTimeMillis()
             );
             log.info("Generate cipher token!");
@@ -39,9 +42,9 @@ public class UsersController {
     }
 
     public boolean reg(UserRegDto payload) {
-        User user = this.usersService.findReg(payload);
-        if(Objects.isNull(user)) {
-            this.usersService.insert(payload);
+        User user = this.usersService.findUser(toUser(payload));
+        if (Objects.isNull(user)) {
+            this.usersService.create(toUser(payload));
             log.info("Check the User on uniq and add to db!");
             return true;
         } else {

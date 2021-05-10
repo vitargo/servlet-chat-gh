@@ -26,8 +26,8 @@ public class UserService implements IUsersService{
     }
 
     @Override
-    public User create(UserRegDto userRegDto) {
-        User result = this.repo.save(userRegDto);
+    public User create(User user) {
+        User result = this.repo.save(user);
         cache.add(result);
         return result;
     }
@@ -38,8 +38,13 @@ public class UserService implements IUsersService{
     }
 
     @Override
-    public User update(User user) {
-        return this.repo.update(user);
+    public User findUser(User user) {
+        return this.repo.findBy(user);
+    }
+
+    @Override
+    public void update(User user) {
+        this.repo.update(user);
     }
 
     @Override
@@ -47,35 +52,5 @@ public class UserService implements IUsersService{
         this.repo.remove(user);
     }
 
-    @Override
-    public User findAuth(UserAuthDto payload) {
-        User result = cache.stream()
-                .filter(user ->
-                        user.getLogin().equals(payload.getLogin())
-                                && user.getPassword().equals(payload.getPassword())
-                ).findFirst().orElse(null);
-        if(Objects.isNull(result)){
-            result = this.repo.findAuth(payload);
-            if(!Objects.isNull(result)){
-                cache.add(result);
-            } else {
-                log.info("Invalid login or password!");
-                return null;
-            }
-        }
-        return result;
-    }
 
-    @Override
-    public User findReg(UserRegDto payload) {
-        User result = this.repo.findReg(payload);
-        return result;
-    }
-
-    @Override
-    public User insert(UserRegDto payload) {
-        User result = this.repo.save(payload);
-        cache.add(result);
-        return result;
-    }
 }

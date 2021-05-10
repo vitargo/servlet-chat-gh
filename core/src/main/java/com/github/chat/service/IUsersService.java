@@ -8,17 +8,14 @@ import java.util.List;
 
 public interface IUsersService {
 
-    User create(UserRegDto userRegDto);
+    User create(User user);
 
     List<User> read();
 
-    User update(User user);
+    User findUser(User user);
+
+    void update(User user);
 
     void delete(User user);
 
-    User findAuth(UserAuthDto payload);
-
-    User findReg(UserRegDto payload);
-
-    User insert(UserRegDto payload);
 }
