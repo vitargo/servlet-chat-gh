@@ -76,21 +76,15 @@ public class CustomJdbcTemplate<T> {
         return result;
     }
 
-    public T update(String query, CustomRowMapper<T> rm, Object... params) {
-        T result = null;
+    public <T> void update(String query, CustomRowMapper<T> rm, Object... params) {
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = connection.prepareStatement(query)) {
             setParameters(stmt, params);
-            int row = stmt.executeUpdate();
-            if(row != 0){
-                ResultSet rs = stmt.getGeneratedKeys();
-                rs.next();
-                result = rm.rowMap(rs);
-            }
+            stmt.executeUpdate();
         } catch (SQLException e){
             log.error("Enter: {}", e.getMessage());
         }
-        return  result;
+
     }
 
     public <T> void delete(String query, Object... params) {

@@ -1,8 +1,6 @@
 package com.github.chat.repository.impl;
 
 import com.github.chat.controllers.UsersController;
-import com.github.chat.dto.UserAuthDto;
-import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.User;
 import com.github.chat.exceptions.LoginException;
 import com.github.chat.repository.UsersRepository;
@@ -13,26 +11,20 @@ import com.github.micro.orm.exceptions.CustomSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.util.List;
-import java.util.Objects;
 
 public class UserRepoImpl implements UsersRepository {
 
     private static final Logger log = LoggerFactory.getLogger(UsersController.class);
 
-    private CustomJdbcTemplate<User> customJdbcTemplate;
+    private final CustomJdbcTemplate<User> customJdbcTemplate;
 
-    private DataSource dataSource;
-    //TODO add CustomJdbcTemplate to param
-    public UserRepoImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-        this.customJdbcTemplate = new CustomJdbcTemplate<>(this.dataSource);
+    public UserRepoImpl(CustomJdbcTemplate<User> customJdbcTemplate) {
+        this.customJdbcTemplate = customJdbcTemplate;
     }
 
     @Override
-    //TODO change param on User
-    public User save(UserRegDto userRegDto) {
+    public User save(User user) {
         String sql = "insert into "
                 + UserTable.tableName + " ("
                 + UserTable.nickname + ", "
@@ -42,18 +34,18 @@ public class UserRepoImpl implements UsersRepository {
                 + UserTable.email + ", "
                 + UserTable.phone + ", "
                 + UserTable.password + ", "
-                +UserTable.role
+                + UserTable.role
                 + ") values (?, ?, ?, ?, ?, ?, ?, ?)";
         return customJdbcTemplate.insert(sql,
                 UserRowMapper.getRowMapper(),
-                userRegDto.getNickname(),
-                userRegDto.getFirstName(),
-                userRegDto.getLastName(),
-                userRegDto.getLogin(),
-                userRegDto.getEmail(),
-                userRegDto.getPhone(),
-                userRegDto.getPassword(),
-                userRegDto.getRole()
+                user.getNickName(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getLogin(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getPassword(),
+                user.getRole()
         );
     }
 
@@ -71,57 +63,27 @@ public class UserRepoImpl implements UsersRepository {
     }
 
     @Override
-    //TODO change param on User
-    public User findAuth(UserAuthDto userAuthDto) {
-        String sql = "select * from "
-                + UserTable.tableName + " where "
-                + UserTable.login + " = ?";
-        try {
-
-            User result = customJdbcTemplate.findBy(
-                    sql,
-                    UserRowMapper.getRowMapper(),
-                    userAuthDto.getLogin()
-            );
-
-            if(Objects.isNull(result) || !userAuthDto.getPassword().equals(result.getPassword())){
-                log.error("Wrong password for user " + userAuthDto.getLogin());
-                return null;
-            } else {
-                return result;
-            }
-        } catch (CustomSQLException e) {
-            throw new CustomSQLException(e.getMessage());
-        } catch (LoginException e){
-            throw new LoginException("Wrong login: " + userAuthDto.getLogin());
-        }
-    }
-
-    @Override
-    //TODO change param on User
-    public User findReg(UserRegDto userRegDto) {
-        String sql = "select * from "
-                + UserTable.tableName + " where "
-                + UserTable.login + " = ? and "
-                + UserTable.email + " = ? and "
-                + UserTable.phone + " = ?";
+    public User findBy(User user) {
+        String sql = "select * from " +
+                UserTable.tableName + " where " +
+                UserTable.login + " = ? and " +
+                UserTable.password + " = ?";
         try {
             return customJdbcTemplate.findBy(
                     sql,
                     UserRowMapper.getRowMapper(),
-                    userRegDto.getLogin(),
-                    userRegDto.getEmail(),
-                    userRegDto.getPhone()
+                    user.getLogin(),
+                    user.getPassword()
             );
         } catch (CustomSQLException e) {
             throw new CustomSQLException(e.getMessage());
-        } catch (LoginException e){
+        } catch (LoginException e) {
             throw new LoginException(e.getMessage());
         }
     }
-    //TODO void
+
     @Override
-    public User update(User user) {
+    public void update(User user) {
         String sql = "update "
                 + UserTable.tableName + " set "
                 + UserTable.firstName + " = ?, "
@@ -133,7 +95,8 @@ public class UserRepoImpl implements UsersRepository {
                 + " where "
                 + UserTable.id + " = ?";
         try {
-            return customJdbcTemplate.update(sql,
+            customJdbcTemplate.update(
+                    sql,
                     UserRowMapper.getRowMapper(),
                     user.getFirstName(),
                     user.getLastName(),

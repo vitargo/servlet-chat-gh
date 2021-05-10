@@ -9,15 +9,13 @@ import java.util.List;
 
 public interface UsersRepository {
 
-    User save(UserRegDto userRegDto);
+    User save(User user);
 
     List<User> findAll();
 
-    User findAuth(UserAuthDto userAuthDto);
+    User findBy(User user);
 
-    User findReg(UserRegDto userRegDto);
-
-    User update(User user);
+    void update(User user);
 
     void remove(User user);
 
