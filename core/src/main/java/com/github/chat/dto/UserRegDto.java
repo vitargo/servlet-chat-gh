@@ -22,16 +22,7 @@ public class UserRegDto {
 
     private String phone;
 
-    public int getRole() {
-        return role;
-    }
-
-    public void setRole(int role) {
-        this.role = role;
-    }
-
     private int role; //Mock
-
 
     public UserRegDto() {}
 
@@ -123,6 +114,14 @@ public class UserRegDto {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 
     @Override
