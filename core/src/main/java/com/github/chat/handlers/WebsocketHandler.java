@@ -52,6 +52,7 @@ public class WebsocketHandler {
                 default:
             }
         } catch (Throwable e){
+            //TODO single sand to user about an error
             log.warn("Enter: {}", e.getMessage());
         }
     }
