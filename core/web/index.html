@@ -229,38 +229,56 @@
     var Token
     // эта функция сработает при нажатии на кнопку
     function signIn() {
+        console.log("zashlo");
         let login = document.querySelector('#login');
         let password = document.querySelector('#password');
         let result = document.querySelector('.result');
         let xhr = new XMLHttpRequest();
         let url = window.location.href;
         //url = window.location.replace("http://localhost:8081/chat/auth");
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function (){
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                switch (xhr.status) {
-                    case 200:
-                        currentUser = login;
-                        var webSocketAccessToken = xhr.responseText;
-                        Token = webSocketAccessToken.token;
-                        console.log(webSocketAccessToken.token);
-                        openSocket(webSocketAccessToken.token);
-                        break;
-                    case 403:
-                        currentUser = null;
-                        document.getElementById("authentication-error").innerHTML = "Oops... These credentials are invalid.";
-                        break;
-                    default:
-                        document.getElementById("authentication-error").innerHTML = "Oops... Looks like something is broken.";
+        if (loginValidator(login.value, password.value)){
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function (){
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    switch (xhr.status) {
+                        case 200:
+                            currentUser = login;
+                            var webSocketAccessToken = xhr.responseText;
+                            Token = webSocketAccessToken.token;
+                            console.log(webSocketAccessToken.token);
+                            openSocket(webSocketAccessToken.token);
+                            break;
+                        case 403:
+                            console.log("Lox");
+                            break;
+                        default:
+                            document.getElementById("authentication-error").innerHTML = "Oops... Looks like something is broken.";
+                    }
                 }
-            }
-        };
+            };
 
-        var data = JSON.stringify({ "login": login.value, "password": password.value });
-        xhr.send(data);
-        console.log(xhr.readyState);
+            var data = JSON.stringify({ "login": login.value, "password": password.value });
+            xhr.send(data);
+            console.log(xhr.readyState);
+        }
     }
+
+    function loginValidator(login, pass){
+        if (login === "") {
+            document.getElementById("login").style.border = "1px solid red";
+            return false;
+        } else if (pass === "" || pass.length < 4) {
+            document.getElementById("password").style.border = "1px solid red";
+            return false;
+        } else {
+            console.log(login,pass);
+            return true;
+        }
+
+    }
+
+
     function connectTo(){
         console.log(JSON.stringify({"topic":"auth","payload":"" + Token }));
         socket.send(JSON.stringify({"topic":"auth","payload":"" + Token }));
@@ -281,21 +299,32 @@
         console.log(data);
         currentUser = login.value;
         xhrs.send(data);
-        console.log("responseXML"+xhrs.responseXML);
-        console.log("resp  "+xhrs.response.token);
+        xhrs.onerror = function (){
+            console.log("ошибочка произошшла");
+        }
+        console.log("responseXML "+xhrs.responseXML);
+        console.log("resp "+xhrs.response);
         console.log("openSocket");
 
         if (socket) {
             socket.close();
         }
+
+
         socket = new WebSocket("ws://localhost:8081/chat");
         xhrs.onload = function () {
-            var au = JSON.stringify({"topic":"auth","payload":xhrs.response});
-            console.log(au);
-            socket.send(au);
+            if (xhrs.status === 200 ){
+                var au = JSON.stringify({"topic":"auth","payload":xhrs.response});
+                console.log("au ksta" + au);
+                socket.send(au);
+            }
+            else {
+                alert("неправильный логин и/или пароль");
+            }
         }
 
         socket.onopen = function (event) {
+            console.log("Да блять а тут я то чо делаю.")
             document.getElementById("authentication").style.display = "none";
             document.getElementById("contacts").style.display = "block";
             document.getElementById("chat").style.display = "block";
