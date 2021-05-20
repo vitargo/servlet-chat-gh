@@ -11,6 +11,7 @@
     <modules>
         <module>micro-orm</module>
         <module>core</module>
+        <module>micro-di</module>
     </modules>
 
     <properties>
