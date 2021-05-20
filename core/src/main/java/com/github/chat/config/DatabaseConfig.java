@@ -1,27 +1,12 @@
 package com.github.chat.config;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import com.github.chat.repository.impl.UserRepoImpl;
+import com.github.chat.service.UserService;
 
 public class DatabaseConfig {
 
-    private static HikariConfig config = new HikariConfig();
-
-    private static HikariDataSource dataSource;
-
-    static {
-        config.setJdbcUrl( "jdbc:postgresql://localhost:5432/servlet_chat" );
-        config.setUsername( "user" );
-        config.setPassword( "password" );
-        dataSource = new HikariDataSource( config );
-    }
-
-    public static HikariConfig getConfig() {
-        return config;
-    }
-
-    public static HikariDataSource getDataSource() {
-        return dataSource;
+    public static UserService getUsersService() {
+        return new UserService(new UserRepoImpl());
     }
 
 }

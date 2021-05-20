@@ -23,7 +23,7 @@ CREATE TABLE "user" (
     role int NOT NULL,
     CONSTRAINT fk_role
         FOREIGN KEY(role)
-            REFERENCES role(id)
+            REFERENCES role(role_id)
 );
 
 ALTER TABLE "history"

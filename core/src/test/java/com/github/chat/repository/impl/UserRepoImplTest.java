@@ -1,25 +1,19 @@
 package com.github.chat.repository.impl;
 
-import com.github.chat.repository.UsersRepository;
-import com.github.micro.orm.CustomJdbcTemplate;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.class)
-public class UserRepoImplTest {
-
-    @Mock
-    private CustomJdbcTemplate jdbcTemplate;
-
-    @Mock
-    private UsersRepository userRepo;
-
-    @Before
-    public void setup() {
+//
+//@RunWith(MockitoJUnitRunner.class)
+//public class UserRepoImplTest {
+//
+//    @Mock
+//    private CustomJdbcTemplate jdbcTemplate;
+//
+//    @Mock
+//    private UsersRepository userRepo;
+//
+//    @Before
+//    public void setup() {
     //    this.userRepo = new UserRepoImpl(this.jdbcTemplate);
-    }
+//    }
 
 //    @Test
 //    public void save() {
@@ -40,4 +34,4 @@ public class UserRepoImplTest {
 //        User act = this.userRepo.save(insertData());
 //        Assert.assertEquals(exp, act);
 //    }
-}
+//}

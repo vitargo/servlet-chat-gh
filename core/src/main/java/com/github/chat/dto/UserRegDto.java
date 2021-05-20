@@ -4,8 +4,6 @@ import java.util.Objects;
 
 public class UserRegDto {
 
-    private long id; //for Mock
-
     private String nickname;
 
     private String firstName;
@@ -22,12 +20,12 @@ public class UserRegDto {
 
     private String phone;
 
-    private int role; //Mock
+    private int role;
 
     public UserRegDto() {}
 
 
-    public UserRegDto(String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone, int role) {
+    public UserRegDto(String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone) {
         this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,20 +34,7 @@ public class UserRegDto {
         this.passwordConfirm = passwordConfirm;
         this.email = email;
         this.phone = phone;
-        this.role = role;
-    }
-
-    public UserRegDto(long id, String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone, int role) {
-        this.id = id;
-        this.nickname = nickname;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.login = login;
-        this.password = password;
-        this.passwordConfirm = passwordConfirm;
-        this.email = email;
-        this.phone = phone;
-        this.role = role;
+        this.role = 2;
     }
 
     public String getNickname() {
