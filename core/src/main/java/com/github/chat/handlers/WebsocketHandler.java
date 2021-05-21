@@ -40,6 +40,7 @@ public class WebsocketHandler {
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
                 case sendTextMessage:
+                    System.out.println(payload);
                     this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     break;
                 case disconnect:

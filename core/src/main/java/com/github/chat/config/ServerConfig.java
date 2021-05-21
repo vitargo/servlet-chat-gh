@@ -23,7 +23,7 @@ public class ServerConfig {
 
         String webPort = System.getenv("PORT");
         if (webPort == null || webPort.isEmpty()) {
-            webPort = "8081";
+            webPort = "8082";
         }
 
         tomcat.setPort(Integer.parseInt(webPort));
