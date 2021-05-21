@@ -1,5 +1,6 @@
 package com.github.chat.config;
 
+import com.github.chat.handlers.PrivateWebsocketHandler;
 import com.github.chat.handlers.WebsocketHandler;
 import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketConnectionPool;
@@ -40,6 +41,25 @@ public class ServerConfig {
 
     private static Consumer<Context> websocketHandler = ctx -> {
         WebsocketHandler handler = new WebsocketHandler(new WebsocketConnectionPool(), new Broker());
+        ServerContainer scon = (ServerContainer) ctx.getServletContext().getAttribute(ServerContainer.class.getName());
+        try {
+            scon.addEndpoint(ServerEndpointConfig
+                    .Builder
+                    .create(WebsocketHandler.class, "/chat")
+                    .configurator(new ServerEndpointConfig.Configurator() {
+                        @Override
+                        public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
+                            return (T) handler;
+                        }
+                    })
+                    .build());
+        } catch (final DeploymentException e) {
+            e.printStackTrace();
+        }
+    };
+
+    private static Consumer<Context> websocketHandlerPrivate = ctx -> {
+        PrivateWebsocketHandler handler = new PrivateWebsocketHandler(new WebsocketConnectionPool(), new Broker());
         ServerContainer scon = (ServerContainer) ctx.getServletContext().getAttribute(ServerContainer.class.getName());
         try {
             scon.addEndpoint(ServerEndpointConfig
