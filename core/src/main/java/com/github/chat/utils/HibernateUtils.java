@@ -1,5 +1,6 @@
 package com.github.chat.utils;
 
+import com.github.chat.entity.History;
 import com.github.chat.entity.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -32,6 +33,7 @@ public class HibernateUtils {
                 configuration.setProperties(settings);
 
                 configuration.addAnnotatedClass(User.class);
+                configuration.addAnnotatedClass(History.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();
