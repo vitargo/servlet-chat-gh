@@ -7,10 +7,10 @@ import com.github.chat.utils.HibernateUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -31,7 +31,7 @@ public class UserRepoImpl implements UsersRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            log.error("Enter, {}", e.getMessage());
         }
         return user;
     }
@@ -49,14 +49,14 @@ public class UserRepoImpl implements UsersRepository {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<User> cr = cb.createQuery(User.class);
             Root<User> root = cr.from(User.class);
-            cr.select(root).where(cb.equal(root.get("login"), user.getEmail()));
-            Query<User> query = session.createQuery(cr);
+            cr.select(root).where(cb.equal(root.get("login"), user.getLogin()));
+            TypedQuery<User> query = session.createQuery(cr);
             List<User> results = query.getResultList();
             if (results.size() != 0) user = results.get(0);
             else user = null;
             Hibernate.initialize(user);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Enter, {}", e.getMessage());
             return null;
         }
         return user;
@@ -73,7 +73,7 @@ public class UserRepoImpl implements UsersRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            log.error("Enter, {}", e.getMessage());
         }
     }
 
@@ -88,7 +88,7 @@ public class UserRepoImpl implements UsersRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            log.error("Enter, {}", e.getMessage());
         }
     }
 }
