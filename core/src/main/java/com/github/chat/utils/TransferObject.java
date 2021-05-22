@@ -8,7 +8,7 @@ public class TransferObject {
 
     public static User toUser(UserRegDto data) {
         return new User(
-                data.getNickname(),
+                data.getNickName(),
                 data.getFirstName(),
                 data.getLastName(),
                 data.getEmail(),

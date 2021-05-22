@@ -6,7 +6,6 @@ import com.github.chat.payload.Topic;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Date;
 import java.util.Optional;
 
 public class JsonHelperTest {
@@ -24,7 +23,7 @@ public class JsonHelperTest {
 
     @Test
     public void toJson2() {
-        Token token = new Token(1L, "Aaaa", "Bbbb", new Date().getTime(), new Date().getTime());
+        Token token = new Token("Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
         String data = TokenProvider.encode(token);
         Envelope env = new Envelope(Topic.auth, data);
         String result = JsonHelper.toJson(env).get();
@@ -42,7 +41,7 @@ public class JsonHelperTest {
 
     @Test
     public void fromJson2() {
-        Token token = new Token(1L, "Aaaa", "Bbbb", new Date().getTime(), new Date().getTime());
+        Token token = new Token("Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
         String cipherToken = TokenProvider.encode(token);
         Envelope env = new Envelope(Topic.auth, cipherToken);
         String res = JsonHelper.toJson(env).orElseThrow();

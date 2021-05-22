@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class UserRegDto {
 
-    private String nickname;
+    private String nickName;
 
     private String firstName;
 
@@ -14,35 +14,57 @@ public class UserRegDto {
 
     private String password;
 
-    private String passwordConfirm;
-
     private String email;
 
     private String phone;
 
-    private int role;
-
     public UserRegDto() {}
 
 
-    public UserRegDto(String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone) {
-        this.nickname = nickname;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.login = login;
-        this.password = password;
-        this.passwordConfirm = passwordConfirm;
-        this.email = email;
-        this.phone = phone;
-        this.role = 2;
+    public UserRegDto(String nickName) {
+        this.nickName = nickName;
     }
 
-    public String getNickname() {
-        return nickname;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRegDto that = (UserRegDto) o;
+        return Objects.equals(nickName, that.nickName) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(login, that.login) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(phone, that.phone);
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickName, firstName, lastName, login, password, email, phone);
+    }
+
+    @Override
+    public String toString() {
+        return "UserRegDto{" +
+                "nickName='" + nickName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getFirstName() {
@@ -77,14 +99,6 @@ public class UserRegDto {
         this.password = password;
     }
 
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -99,40 +113,5 @@ public class UserRegDto {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public int getRole() {
-        return role;
-    }
-
-    public void setRole(int role) {
-        this.role = role;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserRegDto that = (UserRegDto) o;
-        return Objects.equals(nickname, that.nickname) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(login, that.login) && Objects.equals(password, that.password) && Objects.equals(passwordConfirm, that.passwordConfirm) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nickname, firstName, lastName, login, password, passwordConfirm, email, phone);
-    }
-
-    @Override
-    public String toString() {
-        return "UserRegDto{" +
-                "nickname='" + nickname + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", passwordConfirm='" + passwordConfirm + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
     }
 }

@@ -14,7 +14,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.spec.KeySpec;
 import java.util.Base64;
-import java.util.Date;
 
 public class TokenProvider {
 
@@ -71,14 +70,13 @@ public class TokenProvider {
         return newT;
     }
 
-    public static boolean checkToken(String str) {
-        Token token = decode(str);
+    public static boolean checkToken(Token token) {
         if(token == null){
-            log.info("Token is null!");
+            log.error("Invalid token(null)!");
             return false;
         }
-        if (token.getExpire_in() < new Date().getTime()){
-            log.info("Token expired!");
+        if (token.getExpire_in() < System.currentTimeMillis()){
+            log.error("Invalid token(expired)!");
             return false;
         } else {
             return true;

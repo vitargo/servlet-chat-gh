@@ -39,6 +39,9 @@ public class User implements Serializable {
     @Column (name = "role")
     private int role;
 
+    @Column (name = "verification")
+    private boolean verification;
+
     public User() {
     }
 
@@ -56,28 +59,12 @@ public class User implements Serializable {
         this.password = password;
         this.phone = phone;
         this.role = 2;
+        this.verification = false;
     }
 
-    public User(long id,
-                String nickName,
-                String firstName,
-                String lastName,
-                String email,
-                String login,
-                String password,
-                String phone,
-                int role) {
-        this.id = id;
-        this.nickName = nickName;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.login = login;
-        this.password = password;
-        this.phone = phone;
-        this.role = role;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
-
 
     public long getId() {
         return id;
@@ -151,18 +138,37 @@ public class User implements Serializable {
         this.role = role;
     }
 
+    public boolean isVerification() {
+        return verification;
+    }
+
+    public void setVerification(boolean verification) {
+        this.verification = verification;
+    }
+
+
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && role == user.role && Objects.equals(nickName, user.nickName) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(phone, user.phone);
+        return id == user.id &&
+                role == user.role &&
+                verification == user.verification &&
+                Objects.equals(nickName, user.nickName) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(login, user.login) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(phone, user.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nickName, firstName, lastName, email, login, password, phone, role);
+        return Objects.hash(id, nickName, firstName, lastName, email, login, password, phone, role, verification);
     }
 
     @Override
@@ -177,6 +183,7 @@ public class User implements Serializable {
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", role=" + role +
+                ", verification=" + verification +
                 '}';
     }
 }

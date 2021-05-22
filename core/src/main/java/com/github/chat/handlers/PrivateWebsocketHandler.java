@@ -30,13 +30,13 @@ public class PrivateWebsocketHandler {
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
             Token result;
-            long id;
+            String nickname;
             switch(env.getTopic()) {
                 case auth:
                     System.out.println(env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
-                    id = result.getId();
-                    this.websocketConnectionPool.addSession(id,session);
+                    nickname = result.getNickname();
+                    this.websocketConnectionPool.addSession(nickname,session);
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
                 case sendTextMessage:
@@ -46,9 +46,9 @@ public class PrivateWebsocketHandler {
                 case disconnect:
                     broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     result = TokenProvider.decode(env.getPayload());
-                    id = result.getId();
-                    websocketConnectionPool.removeSession(id);
-                    websocketConnectionPool.getSession(id).close();
+                    nickname = result.getNickname();
+                    websocketConnectionPool.removeSession(nickname);
+                    websocketConnectionPool.getSession(nickname).close();
                     break;
                 default:
             }

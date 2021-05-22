@@ -5,33 +5,27 @@ import java.util.Objects;
 
 public class Token implements Serializable {
 
-    private Long id;
-    private String first_name;
-    private String last_name;
+    private String nickname;
     private long expire_in;
     private long createdAt;
 
     public Token() {
     }
 
-    public Token(Long id, String first_name, String last_name, long expire_in, long createdAt) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+    public Token(String nickname, long expire_in, long createdAt) {
+        this.nickname = nickname;
         this.expire_in = expire_in;
         this.createdAt = createdAt;
     }
 
-    public Long getId() {
-        return id;
+    public Token(String nickname) {
+        this.nickname = nickname;
+        this.expire_in = System.currentTimeMillis() + 604800000;
+        this.createdAt = System.currentTimeMillis();
     }
 
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
+    public String getNickname() {
+        return nickname;
     }
 
     public long getExpire_in() {
@@ -47,22 +41,23 @@ public class Token implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Token token = (Token) o;
-        return expire_in == token.expire_in && createdAt == token.createdAt && Objects.equals(id, token.id) && Objects.equals(first_name, token.first_name) && Objects.equals(last_name, token.last_name);
+        return expire_in == token.expire_in &&
+                createdAt == token.createdAt &&
+                Objects.equals(nickname, token.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, first_name, last_name, expire_in, createdAt);
+        return Objects.hash(nickname, expire_in, createdAt);
     }
 
     @Override
     public String toString() {
         return "Token{" +
-                "id=" + id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
+                "nickname='" + nickname + '\'' +
                 ", expire_in=" + expire_in +
                 ", createdAt=" + createdAt +
                 '}';
     }
-   }
+
+}

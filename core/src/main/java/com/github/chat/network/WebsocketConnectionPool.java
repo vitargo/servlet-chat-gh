@@ -7,21 +7,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class WebsocketConnectionPool {
 
-    private ConcurrentHashMap<Long, Session> sessions = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
 
-    public void addSession(Long id, Session session) {
-        this.sessions.put(id, session);
+    public void addSession(String nickname, Session session) {
+        this.sessions.put(nickname, session);
     }
 
     public List<Session> getSessions() {
         return new ArrayList<>(this.sessions.values());
     }
 
-    public void removeSession(long id) {
-        this.sessions.remove(id);
+    public void removeSession(String nickname) {
+        this.sessions.remove(nickname);
     }
 
-    public Session getSession(long id) {
-        return this.sessions.get(id);
+    public Session getSession(String nickname) {
+        return this.sessions.get(nickname);
     }
 }

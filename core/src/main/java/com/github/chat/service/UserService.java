@@ -1,8 +1,6 @@
 package com.github.chat.service;
 
 import com.github.chat.controllers.UsersController;
-import com.github.chat.dto.UserAuthDto;
-import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.User;
 import com.github.chat.repository.UsersRepository;
 import org.slf4j.Logger;
@@ -10,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class UserService implements IUsersService{
 

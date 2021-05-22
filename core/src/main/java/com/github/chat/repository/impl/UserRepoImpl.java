@@ -49,11 +49,18 @@ public class UserRepoImpl implements UsersRepository {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<User> cr = cb.createQuery(User.class);
             Root<User> root = cr.from(User.class);
-            cr.select(root).where(cb.equal(root.get("login"), user.getEmail()));
+            if (user.getLogin() != null) {
+                cr.select(root).where(cb.equal(root.get("login"), user.getLogin()));
+            } else {
+                cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+            }
             Query<User> query = session.createQuery(cr);
             List<User> results = query.getResultList();
-            if (results.size() != 0) user = results.get(0);
-            else user = null;
+            if (results.size() != 0) {
+                user = results.get(0);
+            } else {
+                user = null;
+            }
             Hibernate.initialize(user);
         } catch (Exception e) {
             e.printStackTrace();

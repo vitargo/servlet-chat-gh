@@ -3,8 +3,12 @@ package com.github.chat.handlers;
 import com.github.chat.controllers.UsersController;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
+import com.github.chat.entity.User;
 import com.github.chat.exceptions.BadRequest;
+import com.github.chat.payload.Token;
+import com.github.chat.utils.EmailSender;
 import com.github.chat.utils.JsonHelper;
+import com.github.chat.utils.TokenProvider;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -32,19 +36,26 @@ public class UsersHandler extends HttpServlet {
         } catch (BadRequest e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid body");
         }
-
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException, ServletException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        PrintWriter out = resp.getWriter();
         String url = req.getRequestURI();
-        if (url.equals("/chat/reg")) {
-            RequestDispatcher view = req.getRequestDispatcher("/registration.html");
-            view.forward(req, resp);
-        } else {
-            RequestDispatcher view = req.getRequestDispatcher("/index.html");
-            view.forward(req, resp);
+        String[] urlSplit = url.split("/", 4);
+        if(urlSplit[2].equals("verification")) {
+            Token t = TokenProvider.decode(urlSplit[3]);
+            if(TokenProvider.checkToken(t)) {
+                User user = this.usersController.confirmation(new UserRegDto(t.getNickname()));
+                if(Objects.nonNull(user)){
+                    resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }
+            } else {
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                out.write("Expired token!");
+            }
         }
     }
 
@@ -71,19 +82,15 @@ public class UsersHandler extends HttpServlet {
             }
             if (url.equals("/chat/reg")) {
                 UserRegDto payload = JsonHelper.fromJson(body, UserRegDto.class).orElseThrow(BadRequest::new);
-                boolean result = this.usersController.reg(payload);
+                boolean result = false;
+                if(payload != null) {
+                    this.usersController.reg(payload);
+                }
                 if (result){
-                    resp.setStatus(200);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
-                    out = resp.getWriter();
-                    out.println("<font color=greed>Registration is successful! Please login. Status " + resp.getStatus() + "! </font>");
-                    rd.include(req, resp);
+                    resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+                    EmailSender.sendEmail(payload.getEmail(), TokenProvider.encode(new Token(payload.getNickName())));
                 } else {
                     resp.setStatus(403);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
-                    out = resp.getWriter();
-                    out.println("<font color=red>Registration failed. User is already exist! Status " + resp.getStatus() + "! </font>");
-                    rd.include(req, resp);
                 }
             }
         }

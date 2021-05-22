@@ -1,7 +1,6 @@
 package com.github.chat;
 
 import com.github.chat.config.ServerConfig;
-import com.github.chat.utils.EmailSender;
 
 import javax.servlet.ServletException;
 

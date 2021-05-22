@@ -1,7 +1,5 @@
 package com.github.chat.repository.impl;
 
-import com.github.chat.entity.User;
-
 public class UserRepoImplMocks {
 
     public static final long USER_INSERT_DATA_ID = 1L;
@@ -37,19 +35,19 @@ public class UserRepoImplMocks {
 //        );
 //    }
 
-    public static User expectedInsertData() {
-        return new User (
-                USER_INSERT_DATA_ID,
-                USER_INSERT_NICKNAME,
-                USER_INSERT_FIRST_NAME,
-                USER_INSERT_LAST_NAME,
-                USER_INSERT_EMAIL,
-                USER_INSERT_LOGIN,
-                USER_INSERT_PASSWORD,
-                USER_INSERT_PHONE,
-                USER_INSERT_ROLE
-        );
-    }
+//    public static User expectedInsertData() {
+//        return new User (
+//                USER_INSERT_DATA_ID,
+//                USER_INSERT_NICKNAME,
+//                USER_INSERT_FIRST_NAME,
+//                USER_INSERT_LAST_NAME,
+//                USER_INSERT_EMAIL,
+//                USER_INSERT_LOGIN,
+//                USER_INSERT_PASSWORD,
+//                USER_INSERT_PHONE,
+//                USER_INSERT_ROLE
+//        );
+//    }
 
 
 }

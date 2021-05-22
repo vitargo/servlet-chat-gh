@@ -1,6 +1,8 @@
 package com.github.chat.utils;
 
 import com.github.chat.ChatApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -10,11 +12,12 @@ import java.util.Properties;
 
 public class EmailSender {
 
-    Properties properties = new Properties();
+    private static final Logger log = LoggerFactory.getLogger(EmailSender.class);
 
-    public void sendEmail(String emailRecipient, String token) {
+    public static void sendEmail(String emailRecipient, String token) {
+        Properties properties = new Properties();
         try {
-            this.properties.load(ChatApplication.class.getClassLoader().getResourceAsStream("email.properties"));
+            properties.load(ChatApplication.class.getClassLoader().getResourceAsStream("email.properties"));
 
             String email = properties.getProperty("email");
             String password = properties.getProperty("password");
@@ -37,18 +40,12 @@ public class EmailSender {
             message.setText(
                     "If you dont register in this site, please, ignore this list."
                             + "\n\nYour verification code."
-                            + "https://localhost:8080/verification/" + token);
+                            + "\nhttps://localhost:8080/verification/" + token);
 
             Transport.send(message);
 
-            System.out.println("done");
-
         } catch (IOException | MessagingException | NoClassDefFoundError e) {
-            System.out.println(e.getMessage());
+            log.error("Enter {}: " + e.getMessage());
         }
-
-
     }
-
-
 }
