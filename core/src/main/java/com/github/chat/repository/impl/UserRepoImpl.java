@@ -51,6 +51,8 @@ public class UserRepoImpl implements UsersRepository {
             Root<User> root = cr.from(User.class);
             if (user.getLogin() != null) {
                 cr.select(root).where(cb.equal(root.get("login"), user.getLogin()));
+            } else if (user.getEmail() != null) {
+                cr.select(root).where(cb.equal(root.get("email"), user.getEmail()));
             } else {
                 cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
             }
@@ -63,7 +65,7 @@ public class UserRepoImpl implements UsersRepository {
             }
             Hibernate.initialize(user);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Enter{}:", e);
             return null;
         }
         return user;

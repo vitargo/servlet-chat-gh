@@ -25,14 +25,14 @@ public class UsersController {
 
     public String auth(UserAuthDto payload) {
         User user = this.usersService.findUser(toUser(payload));
-        if (!Objects.isNull(user)) {
-            int LIFETIME = 1800000;
+        if (!Objects.isNull(user) && user.isVerification()) {
+            int LIFETIME = 604800000;
             Token token = new Token(
                     user.getNickName(),
                     System.currentTimeMillis() + LIFETIME,
                     System.currentTimeMillis()
             );
-            log.info("Generate cipher token!");
+            log.info("Generate token successfully!");
             return TokenProvider.encode(token);
         } else {
             return null;

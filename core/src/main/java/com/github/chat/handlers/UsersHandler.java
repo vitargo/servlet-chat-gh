@@ -10,7 +10,6 @@ import com.github.chat.utils.EmailSender;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -69,15 +68,17 @@ public class UsersHandler extends HttpServlet {
             String url = req.getRequestURI();
             if (url.equals("/chat/auth")) {
                 UserAuthDto payload = JsonHelper.fromJson(body, UserAuthDto.class).orElseThrow(BadRequest::new);
-                String result = this.usersController.auth(payload);
+                System.out.println(payload);
+                String result = null;
+                if(payload != null){
+                    result = this.usersController.auth(payload);
+                }
                 if (!Objects.isNull(result)){
                     resp.setContentType("text/html");
                     resp.setStatus(200);
                     out.write(result);
                 } else {
                     resp.setStatus(403);
-                    RequestDispatcher view = req.getRequestDispatcher("/index.html");
-                    view.include(req, resp);
                 }
             }
             if (url.equals("/chat/reg")) {
