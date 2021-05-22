@@ -40,7 +40,7 @@ public class EmailSender {
             message.setText(
                     "If you dont register in this site, please, ignore this list."
                             + "\n\nYour verification code."
-                            + "\nhttps://localhost:8080/verification/" + token);
+                            + "\nhttps://localhost:8082/chat/verification/" + token);
 
             Transport.send(message);
 
