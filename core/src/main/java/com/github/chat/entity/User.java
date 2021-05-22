@@ -42,6 +42,9 @@ public class User implements Serializable {
     @Column (name = "verification")
     private boolean verification;
 
+    @Column (name = "company_name")
+    private String companyName;
+
     public User() {
     }
 
@@ -50,7 +53,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public User(String nickName, String firstName, String lastName, String email, String login, String password, String phone) {
+    public User(String nickName, String firstName, String lastName, String email, String login, String password, String phone, String companyName) {
         this.nickName = nickName;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -59,8 +62,10 @@ public class User implements Serializable {
         this.password = password;
         this.phone = phone;
         this.role = 2;
-        this.verification = false;
+        this.verification = Boolean.FALSE;
+        this.companyName = companyName;
     }
+
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -146,8 +151,13 @@ public class User implements Serializable {
         this.verification = verification;
     }
 
+    public String getCompanyName() {
+        return companyName;
+    }
 
-
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -163,13 +173,15 @@ public class User implements Serializable {
                 Objects.equals(email, user.email) &&
                 Objects.equals(login, user.login) &&
                 Objects.equals(password, user.password) &&
-                Objects.equals(phone, user.phone);
+                Objects.equals(phone, user.phone) &&
+                Objects.equals(companyName, user.companyName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nickName, firstName, lastName, email, login, password, phone, role, verification);
+        return Objects.hash(id, nickName, firstName, lastName, email, login, password, phone, role, verification, companyName);
     }
+
 
     @Override
     public String toString() {
@@ -184,6 +196,7 @@ public class User implements Serializable {
                 ", phone='" + phone + '\'' +
                 ", role=" + role +
                 ", verification=" + verification +
+                ", companyName='" + companyName + '\'' +
                 '}';
     }
 }

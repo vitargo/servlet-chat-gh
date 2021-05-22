@@ -18,6 +18,8 @@ public class UserRegDto {
 
     private String phone;
 
+    private String companyName;
+
     public UserRegDto() {}
 
 
@@ -25,39 +27,20 @@ public class UserRegDto {
         this.nickName = nickName;
     }
 
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserRegDto that = (UserRegDto) o;
-        return Objects.equals(nickName, that.nickName) &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(lastName, that.lastName) &&
-                Objects.equals(login, that.login) &&
-                Objects.equals(password, that.password) &&
-                Objects.equals(email, that.email) &&
-                Objects.equals(phone, that.phone);
+    public UserRegDto(String nickName, String firstName,
+                      String lastName, String login,
+                      String password, String email,
+                      String phone, String companyName) {
+        this.nickName = nickName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.companyName = companyName;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(nickName, firstName, lastName, login, password, email, phone);
-    }
-
-    @Override
-    public String toString() {
-        return "UserRegDto{" +
-                "nickName='" + nickName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
-    }
 
     public String getNickName() {
         return nickName;
@@ -113,5 +96,48 @@ public class UserRegDto {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRegDto that = (UserRegDto) o;
+        return Objects.equals(nickName, that.nickName) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(login, that.login) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(phone, that.phone) &&
+                Objects.equals(companyName, that.companyName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickName, firstName, lastName, login, password, email, phone, companyName);
+    }
+
+
+    @Override
+    public String toString() {
+        return "UserRegDto{" +
+                "nickName='" + nickName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", companyName='" + companyName + '\'' +
+                '}';
     }
 }

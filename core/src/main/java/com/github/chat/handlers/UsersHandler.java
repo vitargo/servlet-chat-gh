@@ -84,7 +84,7 @@ public class UsersHandler extends HttpServlet {
                 UserRegDto payload = JsonHelper.fromJson(body, UserRegDto.class).orElseThrow(BadRequest::new);
                 boolean result = false;
                 if(payload != null) {
-                    this.usersController.reg(payload);
+                    result = this.usersController.reg(payload);
                 }
                 if (result){
                     resp.setStatus(HttpServletResponse.SC_ACCEPTED);

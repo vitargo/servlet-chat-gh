@@ -14,7 +14,8 @@ public class TransferObject {
                 data.getEmail(),
                 data.getLogin(),
                 data.getPassword(),
-                data.getPhone()
+                data.getPhone(),
+                data.getCompanyName()
         );
     }
 
