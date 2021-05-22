@@ -68,7 +68,6 @@ public class UsersHandler extends HttpServlet {
             String url = req.getRequestURI();
             if (url.equals("/chat/auth")) {
                 UserAuthDto payload = JsonHelper.fromJson(body, UserAuthDto.class).orElseThrow(BadRequest::new);
-                System.out.println(payload);
                 String result = null;
                 if(payload != null){
                     result = this.usersController.auth(payload);
@@ -83,13 +82,14 @@ public class UsersHandler extends HttpServlet {
             }
             if (url.equals("/chat/reg")) {
                 UserRegDto payload = JsonHelper.fromJson(body, UserRegDto.class).orElseThrow(BadRequest::new);
-                boolean result = false;
+                String result = null;
                 if(payload != null) {
                     result = this.usersController.reg(payload);
                 }
-                if (result){
+                if (result != null){
                     resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-                    EmailSender.sendEmail(payload.getEmail(), TokenProvider.encode(new Token(payload.getNickName())));
+                    System.out.println(result);;
+                    EmailSender.sendEmail(payload.getEmail(), result);
                 } else {
                     resp.setStatus(403);
                 }

@@ -45,6 +45,9 @@ public class User implements Serializable {
     @Column (name = "company_name")
     private String companyName;
 
+    @Column (name = "avatar")
+    private String avatar;
+
     public User() {
     }
 
@@ -65,6 +68,8 @@ public class User implements Serializable {
         this.verification = Boolean.FALSE;
         this.companyName = companyName;
     }
+
+
 
 
     public static long getSerialVersionUID() {
@@ -157,6 +162,14 @@ public class User implements Serializable {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @Override

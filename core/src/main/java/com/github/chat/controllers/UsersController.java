@@ -32,14 +32,14 @@ public class UsersController {
                     System.currentTimeMillis() + LIFETIME,
                     System.currentTimeMillis()
             );
-            log.info("Generate token successfully!");
+            log.info("Generate authorization token successfully!");
             return TokenProvider.encode(token);
         } else {
             return null;
         }
     }
 
-    public boolean reg(UserRegDto payload) {
+    public String reg(UserRegDto payload) {
         User newUser = toUser(payload);
         User user = null;
         if (newUser.getLogin() != null) {
@@ -53,10 +53,17 @@ public class UsersController {
         if (Objects.isNull(user)) {
             this.usersService.create(toUser(payload));
             log.info("Check the User on uniq and add to db!");
-            return true;
+            int LIFETIME = 604800000;
+            Token token = new Token(
+                    newUser.getNickName(),
+                    System.currentTimeMillis() + LIFETIME,
+                    System.currentTimeMillis()
+            );
+            log.info("Generate authorization token successfully!");
+            return TokenProvider.encode(token);
         } else {
             log.info("This User is already exist!");
-            return false;
+            return null;
         }
     }
 
