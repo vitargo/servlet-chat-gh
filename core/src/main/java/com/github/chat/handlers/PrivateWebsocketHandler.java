@@ -3,8 +3,9 @@ package com.github.chat.handlers;
 import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.payload.Envelope;
-import com.github.chat.payload.Token;
+import com.github.chat.payload.PrivateToken;
 import com.github.chat.utils.JsonHelper;
+import com.github.chat.utils.PrivateTokenProvider;
 import com.github.chat.utils.TokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import javax.websocket.Session;
 
 public class PrivateWebsocketHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(WebsocketHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(PrivateWebsocketHandler.class);
 
     private final Broker broker;
 
@@ -29,13 +30,13 @@ public class PrivateWebsocketHandler {
     public void messages(Session session, String payload){
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
-            Token result;
+            PrivateToken token;
             String nickname;
             long roomId;
             switch(env.getTopic()) {
                 case auth:
-                    result = TokenProvider.decode(env.getPayload());
-                    nickname = result.getNickname();
+                    token = PrivateTokenProvider.decode(env.getPayload());
+                    nickname = token.getNickname();
                     this.websocketConnectionPool.addSession(nickname,session);
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
@@ -45,8 +46,8 @@ public class PrivateWebsocketHandler {
                     break;
                 case disconnect:
                     broker.broadcast(this.websocketConnectionPool.getSessions(), env);
-                    result = TokenProvider.decode(env.getPayload());
-                    nickname = result.getNickname();
+                    token = PrivateTokenProvider.decode(env.getPayload());
+                    nickname = token.getNickname();
                     websocketConnectionPool.removeSession(nickname);
                     websocketConnectionPool.getSession(nickname).close();
                     break;
