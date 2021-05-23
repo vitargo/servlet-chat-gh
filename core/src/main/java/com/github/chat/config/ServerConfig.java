@@ -33,10 +33,10 @@ public class ServerConfig {
 
         File f = new File("core/web");
         Context ctx = tomcat.addWebapp("", f.getAbsolutePath());
-        tomcat.addServlet("","UserHandler",HandlerConfig.usersHandler()).setAsyncSupported(true);
+        tomcat.addServlet("", "UserHandler", HandlerConfig.usersHandler()).setAsyncSupported(true);
         ctx.addServletMappingDecoded("/chat/*", "UserHandler");
         ctx.addApplicationListener(WsContextListener.class.getName());
-        return new ServerRunner(tomcat, ctx, List.of(websocketHandler));
+        return new ServerRunner(tomcat, ctx, List.of(websocketHandler, websocketHandlerPrivate));
     }
 
     private static Consumer<Context> websocketHandler = ctx -> {
@@ -64,7 +64,7 @@ public class ServerConfig {
         try {
             scon.addEndpoint(ServerEndpointConfig
                     .Builder
-                    .create(WebsocketHandler.class, "/chat")
+                    .create(PrivateWebsocketHandler.class, "/private")
                     .configurator(new ServerEndpointConfig.Configurator() {
                         @Override
                         public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {

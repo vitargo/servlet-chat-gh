@@ -31,9 +31,9 @@ public class PrivateWebsocketHandler {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
             Token result;
             String nickname;
+            long roomId;
             switch(env.getTopic()) {
                 case auth:
-                    System.out.println(env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
                     nickname = result.getNickname();
                     this.websocketConnectionPool.addSession(nickname,session);
