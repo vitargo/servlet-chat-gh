@@ -49,10 +49,20 @@ public class UserRepoImpl implements UsersRepository {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<User> cr = cb.createQuery(User.class);
             Root<User> root = cr.from(User.class);
+            CriteriaQuery<User> aqu;
             if (user.getLogin() != null) {
-                cr.select(root).where(cb.equal(root.get("login"), user.getLogin()));
+                aqu = cr.select(root).where(cb.equal(root.get("login"), user.getLogin()));
+                if (aqu == null) {
+                    aqu = cr.select(root).where(cb.equal(root.get("email"), user.getEmail()));
+                    if (aqu == null) {
+                        cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+                    }
+                }
             } else if (user.getEmail() != null) {
-                cr.select(root).where(cb.equal(root.get("email"), user.getEmail()));
+                aqu = cr.select(root).where(cb.equal(root.get("email"), user.getEmail()));
+                if (aqu == null) {
+                    cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+                }
             } else {
                 cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
             }

@@ -1,5 +1,7 @@
 package com.github.chat.entity;
 
+import com.github.chat.utils.PasswordProvider;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -48,6 +50,9 @@ public class User implements Serializable {
     @Column (name = "avatar")
     private String avatar;
 
+    @Column (name = "salt")
+    private String salt;
+
     public User() {
     }
 
@@ -57,20 +62,22 @@ public class User implements Serializable {
     }
 
     public User(String nickName, String firstName, String lastName, String email, String login, String password, String phone, String companyName) {
+        String[] hash = new String[2];
+        if(password != null) {
+            hash = PasswordProvider.encodePassReg(password);
+        }
         this.nickName = nickName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.login = login;
-        this.password = password;
+        this.password = hash[1];
         this.phone = phone;
         this.role = 2;
         this.verification = Boolean.FALSE;
         this.companyName = companyName;
+        this.salt = hash[0];
     }
-
-
-
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -170,6 +177,14 @@ public class User implements Serializable {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     @Override

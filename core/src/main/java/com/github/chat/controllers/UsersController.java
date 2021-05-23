@@ -41,15 +41,7 @@ public class UsersController {
 
     public String reg(UserRegDto payload) {
         User newUser = toUser(payload);
-        User user = null;
-        if (newUser.getLogin() != null) {
-            user = this.usersService.findUser(newUser);
-            if (user == null) {
-                user = this.usersService.findUser(toUser(new UserRegDto(newUser.getNickName())));
-            }
-        } else {
-            this.usersService.findUser(newUser);
-        }
+        User user = this.usersService.findUser(newUser);
         if (Objects.isNull(user)) {
             this.usersService.create(toUser(payload));
             log.info("Check the User on uniq and add to db!");

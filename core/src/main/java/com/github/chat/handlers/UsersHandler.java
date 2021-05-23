@@ -32,6 +32,7 @@ public class UsersHandler extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try{
             super.service(req, resp);
+            System.out.println(req);
         } catch (BadRequest e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid body");
         }
