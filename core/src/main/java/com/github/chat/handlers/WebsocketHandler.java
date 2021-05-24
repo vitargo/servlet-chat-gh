@@ -1,5 +1,6 @@
 package com.github.chat.handlers;
 
+import com.github.chat.controllers.MessagesController;
 import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.payload.Envelope;
@@ -16,6 +17,8 @@ public class WebsocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(WebsocketHandler.class);
 
+    private MessagesController messagesController;
+
     private final Broker broker;
 
     private final WebsocketConnectionPool websocketConnectionPool;
@@ -31,6 +34,7 @@ public class WebsocketHandler {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
             Token result;
             long id;
+            String message = "";
             switch(env.getTopic()) {
                 case auth:
                     System.out.println(env.getPayload());
@@ -40,8 +44,9 @@ public class WebsocketHandler {
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
                 case sendTextMessage:
-                    System.out.println(payload);
                     this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
+                    message = env.getPayload();
+                    this.messagesController.saveMessage(message);
                     break;
                 case disconnect:
                     broker.broadcast(this.websocketConnectionPool.getSessions(), env);

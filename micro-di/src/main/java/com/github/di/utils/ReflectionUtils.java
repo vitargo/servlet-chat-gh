@@ -18,7 +18,7 @@ public class ReflectionUtils {
     public static List<Class<?>> findFinalFields(Class<?> clz){
         List<Class<?>> result = new ArrayList<>();
         Field[] fields = clz.getDeclaredFields();
-//        clz.isInterface();
+        clz.isInterface();
         for(Field field : fields) {
             if((field.getModifiers() & Modifier.FINAL) == Modifier.FINAL) {
                 result.add(field.getType());

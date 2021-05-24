@@ -72,6 +72,7 @@ public class UsersHandler extends HttpServlet {
             if (url.equals("/chat/reg")) {
                 UserRegDto payload = JsonHelper.fromJson(body, UserRegDto.class).orElseThrow(BadRequest::new);
                 boolean result = this.usersController.reg(payload);
+                System.out.println(payload);
                 if (result){
                     resp.setStatus(200);
                     RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");

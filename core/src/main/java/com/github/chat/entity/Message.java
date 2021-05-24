@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "sc_history")
-public class History implements Serializable {
+public class Message implements Serializable {
 
     private final static long serialVersionUID = -5210081818555834791L;
 
@@ -28,10 +28,17 @@ public class History implements Serializable {
     @Column(name = "created_at")
     private Date createdAd;
 
-    public History() {
+    public Message() {
     }
 
-    public History(long id, int chatId, long userId, String lineText, Date createdAd) {
+    public Message(int chatId, long userId, String lineText, Date createdAd) {
+        this.chatId = chatId;
+        this.userId = userId;
+        this.lineText = lineText;
+        this.createdAd = createdAd;
+    }
+
+    public Message(long id, int chatId, long userId, String lineText, Date createdAd) {
         this.id = id;
         this.chatId = chatId;
         this.userId = userId;
@@ -83,7 +90,7 @@ public class History implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        History history = (History) o;
+        Message history = (Message) o;
         return id == history.id && chatId == history.chatId && userId == history.userId && Objects.equals(lineText, history.lineText) && Objects.equals(createdAd, history.createdAd);
     }
 

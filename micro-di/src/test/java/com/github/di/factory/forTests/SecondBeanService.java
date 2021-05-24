@@ -7,11 +7,11 @@ public class SecondBeanService {
 
     private final MyCustomBeanRepository myCustomBeanRepository;
 
-//    private final IMyCustomInterface firstRealiase;
+    private final IMyCustomInterface firstRealiase;
 
     public SecondBeanService(MyCustomBeanRepository myCustomBeanRepository, IMyCustomInterface firstRealiase) {
         this.myCustomBeanRepository = myCustomBeanRepository;
-//        this.firstRealiase = firstRealiase;
+        this.firstRealiase = firstRealiase;
     }
 
     public String getHello() {
