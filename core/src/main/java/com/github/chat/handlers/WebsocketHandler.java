@@ -24,6 +24,8 @@ public class WebsocketHandler {
 
     private final WebsocketConnectionPool websocketConnectionPool;
 
+    String nickname = "";
+
     public WebsocketHandler(WebsocketConnectionPool websocketConnectionPool, Broker broker) {
         this.websocketConnectionPool = websocketConnectionPool;
         this.broker = broker;
@@ -33,9 +35,8 @@ public class WebsocketHandler {
     public void messages(Session session, String payload){
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
-            Token result;
-            String nickname;
-            long id;
+            Token result = null;
+            long userId;
             String message = "";
             switch(env.getTopic()) {
                 case auth:
@@ -46,7 +47,7 @@ public class WebsocketHandler {
                     break;
                 case sendTextMessage:
                     message = env.getPayload();
-                    messagesController.saveMessage(message);
+                    messagesController.saveMessage(nickname, message);
                     this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     break;
                 case disconnect:

@@ -49,7 +49,7 @@ public class MessageRepoImpl implements MessageRepository {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Message> cr = cb.createQuery(Message.class);
             Root<Message> root = cr.from(Message.class);
-            cr.select(root).where(cb.equal(root.get("chatId"), new Message().getChatId()));
+            cr.select(root).where(cb.equal(root.get("nickname"), new Message().getNickname()));
             Query<Message> query = session.createQuery(cr);
             List<Message> results = query.getResultList();
             messages.addAll(results);

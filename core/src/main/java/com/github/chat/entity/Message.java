@@ -19,8 +19,8 @@ public class Message implements Serializable {
     @Column(name = "chat_id")
     private int chatId;
 
-    @Column(name = "user_id")
-    private long userId;
+    @Column(name = "nickname")
+    private String nickname;
 
     @Column(name = "line_text")
     private String lineText;
@@ -31,17 +31,17 @@ public class Message implements Serializable {
     public Message() {
     }
 
-    public Message(int chatId, long userId, String lineText, Date createdAd) {
+    public Message(int chatId, String nickname, String lineText, Date createdAd) {
         this.chatId = chatId;
-        this.userId = userId;
+        this.nickname = nickname;
         this.lineText = lineText;
         this.createdAd = createdAd;
     }
 
-    public Message(long id, int chatId, long userId, String lineText, Date createdAd) {
+    public Message(long id, int chatId, String nickname, String lineText, Date createdAd) {
         this.id = id;
         this.chatId = chatId;
-        this.userId = userId;
+        this.nickname = nickname;
         this.lineText = lineText;
         this.createdAd = createdAd;
     }
@@ -62,12 +62,12 @@ public class Message implements Serializable {
         this.chatId = chatId;
     }
 
-    public long getUserId() {
-        return userId;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getLineText() {
@@ -90,21 +90,21 @@ public class Message implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Message history = (Message) o;
-        return id == history.id && chatId == history.chatId && userId == history.userId && Objects.equals(lineText, history.lineText) && Objects.equals(createdAd, history.createdAd);
+        Message message = (Message) o;
+        return id == message.id && chatId == message.chatId && nickname == message.nickname && Objects.equals(lineText, message.lineText) && Objects.equals(createdAd, message.createdAd);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, chatId, userId, lineText, createdAd);
+        return Objects.hash(id, chatId, nickname, lineText, createdAd);
     }
 
     @Override
     public String toString() {
-        return "History{" +
+        return "Message{" +
                 "id=" + id +
                 ", chatId=" + chatId +
-                ", userId=" + userId +
+                ", nickname=" + nickname +
                 ", lineText='" + lineText + '\'' +
                 ", createdAd=" + createdAd +
                 '}';
