@@ -1,6 +1,7 @@
 package com.github.chat.utils;
 
 import com.github.chat.exceptions.CryptoException;
+import com.github.chat.payload.PrivateToken;
 import com.github.chat.payload.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
-public class TokenProvider {
+public class PrivateTokenProvider {
 
     private static final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
@@ -26,9 +27,9 @@ public class TokenProvider {
     private static byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
-    public static String encode(Token t) {
-        if(t == null){
-            throw new CryptoException ("Empty token!");
+    public static String encode(PrivateToken t) {
+        if (t == null) {
+            throw new CryptoException("Empty token!");
         }
         String str = JsonHelper.toJson(t).get();
         try {
@@ -50,8 +51,8 @@ public class TokenProvider {
         return null;
     }
 
-    public static Token decode(String str) {
-        Token newT = null;
+    public static PrivateToken decode(String str) {
+        PrivateToken newT = null;
 
         try {
             IvParameterSpec ivspec = new IvParameterSpec(iv);
@@ -63,19 +64,19 @@ public class TokenProvider {
 
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
-            newT = JsonHelper.fromJson(new String(cipher.doFinal(Base64.getDecoder().decode(str))), Token.class).orElse(null);
+            newT = JsonHelper.fromJson(new String(cipher.doFinal(Base64.getDecoder().decode(str))), PrivateToken.class).orElse(null);
         } catch (Exception e) {
             log.error("Error while decrypting: " + e);
         }
         return newT;
     }
 
-    public static boolean checkToken(Token token) {
-        if(token == null){
+    public static boolean checkToken(PrivateToken token) {
+        if (token == null) {
             log.error("Invalid token(null)!");
             return false;
         }
-        if (token.getExpire_in() < System.currentTimeMillis()){
+        if (token.getExpire_in() < System.currentTimeMillis()) {
             log.error("Invalid token(expired)!");
             return false;
         } else {

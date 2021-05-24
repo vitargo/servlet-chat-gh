@@ -49,14 +49,44 @@ public class UserRepoImpl implements UsersRepository {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<User> cr = cb.createQuery(User.class);
             Root<User> root = cr.from(User.class);
-            cr.select(root).where(cb.equal(root.get("login"), user.getLogin()));
-            TypedQuery<User> query = session.createQuery(cr);
+            CriteriaQuery<User> aqu;
+            if (user.getLogin() != null) {
+                aqu = cr.select(root).where(cb.equal(root.get("login"), user.getLogin()));
+                if (aqu == null) {
+                    aqu = cr.select(root).where(cb.equal(root.get("email"), user.getEmail()));
+                    if (aqu == null) {
+                        aqu = cr.select(root).where(cb.equal(root.get("id"), user.getId()));
+                        if (aqu == null) {
+                            cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+                        }
+                    }
+                }
+            } else if (user.getEmail() != null) {
+                aqu = cr.select(root).where(cb.equal(root.get("email"), user.getEmail()));
+                if (aqu == null) {
+                    aqu = cr.select(root).where(cb.equal(root.get("id"), user.getId()));
+                    if (aqu == null) {
+                        cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+                    }
+                }
+            } else if (user.getId() != 0) {
+                aqu = cr.select(root).where(cb.equal(root.get("id"), user.getId()));
+                if (aqu == null) {
+                    cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+                }
+            } else {
+                cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+            }
+            Query<User> query = session.createQuery(cr);
             List<User> results = query.getResultList();
-            if (results.size() != 0) user = results.get(0);
-            else user = null;
+            if (results.size() != 0) {
+                user = results.get(0);
+            } else {
+                user = null;
+            }
             Hibernate.initialize(user);
         } catch (Exception e) {
-            log.error("Enter, {}", e.getMessage());
+            log.error("Enter{}:", e);
             return null;
         }
         return user;

@@ -1,5 +1,7 @@
 package com.github.chat.entity;
 
+import com.github.chat.utils.PasswordProvider;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -39,6 +41,18 @@ public class User implements Serializable {
     @Column (name = "role")
     private int role;
 
+    @Column (name = "verification")
+    private boolean verification;
+
+    @Column (name = "company_name")
+    private String companyName;
+
+    @Column (name = "avatar")
+    private String avatar;
+
+    @Column (name = "salt")
+    private String salt;
+
     public User() {
     }
 
@@ -47,37 +61,54 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public User(String nickName, String firstName, String lastName, String email, String login, String password, String phone) {
+    public User(String nickName, String firstName,
+                String lastName, String email,
+                String login, String password,
+                String phone, String companyName, String avatar) {
+        String[] hash = new String[2];
+        if(password != null) {
+            hash = PasswordProvider.encodePassReg(password);
+        }
         this.nickName = nickName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.login = login;
-        this.password = password;
+        this.password = hash[1];
         this.phone = phone;
         this.role = 2;
+        this.verification = Boolean.FALSE;
+        this.companyName = companyName;
+        this.salt = hash[0];
+        this.avatar = avatar;
     }
 
-    public User(long id,
-                String nickName,
-                String firstName,
-                String lastName,
-                String email,
-                String login,
-                String password,
-                String phone,
-                int role) {
+    public User(long id, String nickName, String firstName,
+                String lastName, String email, String login,
+                String password, String phone, boolean verification,
+                String companyName, String avatar) {
         this.id = id;
+        String[] hash = new String[2];
+        if(password != null) {
+            hash = PasswordProvider.encodePassReg(password);
+        }
         this.nickName = nickName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.login = login;
-        this.password = password;
+        this.password = hash[1];
         this.phone = phone;
-        this.role = role;
+        this.role = 2;
+        this.verification = verification;
+        this.companyName = companyName;
+        this.salt = hash[0];
+        this.avatar = avatar;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
     public long getId() {
         return id;
@@ -151,19 +182,61 @@ public class User implements Serializable {
         this.role = role;
     }
 
+    public boolean isVerification() {
+        return verification;
+    }
+
+    public void setVerification(boolean verification) {
+        this.verification = verification;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && role == user.role && Objects.equals(nickName, user.nickName) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(phone, user.phone);
+        return id == user.id &&
+                role == user.role &&
+                verification == user.verification &&
+                Objects.equals(nickName, user.nickName) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(login, user.login) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(phone, user.phone) &&
+                Objects.equals(companyName, user.companyName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nickName, firstName, lastName, email, login, password, phone, role);
+        return Objects.hash(id, nickName, firstName, lastName, email, login, password, phone, role, verification, companyName);
     }
+
 
     @Override
     public String toString() {
@@ -177,6 +250,10 @@ public class User implements Serializable {
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", role=" + role +
+                ", verification=" + verification +
+                ", companyName='" + companyName + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", salt='" + salt + '\'' +
                 '}';
     }
 }

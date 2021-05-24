@@ -36,15 +36,23 @@ public class UsersHandler extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException, ServletException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        PrintWriter out = resp.getWriter();
         String url = req.getRequestURI();
-        if (url.equals("/chat/reg")) {
-            RequestDispatcher view = req.getRequestDispatcher("/registration.html");
-            view.forward(req, resp);
-        } else {
-            RequestDispatcher view = req.getRequestDispatcher("/index.html");
-            view.forward(req, resp);
+        String[] urlSplit = url.split("/", 4);
+        if(urlSplit[2].equals("verification")) {
+            Token t = TokenProvider.decode(urlSplit[3]);
+            if(TokenProvider.checkToken(t)) {
+                User user = this.usersController.confirmation(new UserRegDto(t.getNickname()));
+                if(Objects.nonNull(user)){
+                    resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }
+            } else {
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                out.write("Expired token!");
+            }
         }
     }
 
@@ -58,33 +66,57 @@ public class UsersHandler extends HttpServlet {
             String url = req.getRequestURI();
             if (url.equals("/chat/auth")) {
                 UserAuthDto payload = JsonHelper.fromJson(body, UserAuthDto.class).orElseThrow(BadRequest::new);
-                String result = this.usersController.auth(payload);
+                String result = null;
+                if(payload != null){
+                    result = this.usersController.auth(payload);
+                }
                 if (!Objects.isNull(result)){
                     resp.setContentType("text/html");
                     resp.setStatus(200);
                     out.write(result);
                 } else {
                     resp.setStatus(403);
-                    RequestDispatcher view = req.getRequestDispatcher("/index.html");
-                    view.include(req, resp);
                 }
             }
             if (url.equals("/chat/reg")) {
                 UserRegDto payload = JsonHelper.fromJson(body, UserRegDto.class).orElseThrow(BadRequest::new);
-                boolean result = this.usersController.reg(payload);
-                System.out.println(payload);
-                if (result){
-                    resp.setStatus(200);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
-                    out = resp.getWriter();
-                    out.println("<font color=greed>Registration is successful! Please login. Status " + resp.getStatus() + "! </font>");
-                    rd.include(req, resp);
+                String result = null;
+                if(payload != null) {
+                    result = this.usersController.reg(payload);
+                }
+                if (result != null){
+                    resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+                    System.out.println(result);;
+                    EmailSender.sendEmail(payload.getEmail(), result);
                 } else {
                     resp.setStatus(403);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
-                    out = resp.getWriter();
-                    out.println("<font color=red>Registration failed. User is already exist! Status " + resp.getStatus() + "! </font>");
-                    rd.include(req, resp);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        PrintWriter out = resp.getWriter();
+        String body = req.getReader().lines().collect(Collectors.joining());
+        if (!"application/json".equalsIgnoreCase(req.getHeader("Content-Type"))) {
+            resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Invalid content type");
+        } else {
+            String url = req.getRequestURI();
+            if (url.equals("/chat/myaccount")) {
+                String token = req.getHeader("Authorization");
+                Token t = TokenProvider.decode(token);
+                if (TokenProvider.checkToken(t)) {
+                    UserRegDto payload = JsonHelper.fromJson(body, UserRegDto.class).orElseThrow(BadRequest::new);
+                    if (payload != null) {
+                        payload.setId(t.getId());
+                        payload.setVerification(true);
+                        this.usersController.update(payload);
+                        resp.setStatus(200);
+                    } else {
+                        resp.setStatus(403);
+                        out.write("No data to update!");
+                    }
                 }
             }
         }

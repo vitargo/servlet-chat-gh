@@ -1,10 +1,15 @@
 package com.github.chat.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class UserRegDto {
 
-    private String nickname;
+    private long id;
+
+    private String nickName;
 
     private String firstName;
 
@@ -14,35 +19,54 @@ public class UserRegDto {
 
     private String password;
 
-    private String passwordConfirm;
-
     private String email;
 
     private String phone;
 
-    private int role;
+    private boolean verification;
+
+    private String companyName;
+
+    private String avatar;
 
     public UserRegDto() {}
 
 
-    public UserRegDto(String nickname, String firstName, String lastName, String login, String password, String passwordConfirm, String email, String phone) {
-        this.nickname = nickname;
+    public UserRegDto(String nickName) {
+        this.nickName = nickName;
+    }
+
+    @JsonCreator
+    public UserRegDto(@JsonProperty("id")long id,
+                      @JsonProperty("nickName")String nickName,
+                      @JsonProperty("firstName")String firstName,
+                      @JsonProperty("lastName")String lastName,
+                      @JsonProperty("login")String login,
+                      @JsonProperty("password")String password,
+                      @JsonProperty("email")String email,
+                      @JsonProperty("phone")String phone,
+                      @JsonProperty("companyName")String companyName,
+                      @JsonProperty("avatar")String avatar) {
+        this.id = id;
+        this.nickName = nickName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
         this.password = password;
-        this.passwordConfirm = passwordConfirm;
         this.email = email;
         this.phone = phone;
-        this.role = 2;
+        this.verification = Boolean.FALSE;
+        this.companyName = companyName;
+        this.avatar = avatar;
     }
 
-    public String getNickname() {
-        return nickname;
+
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getFirstName() {
@@ -77,14 +101,6 @@ public class UserRegDto {
         this.password = password;
     }
 
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -101,12 +117,29 @@ public class UserRegDto {
         this.phone = phone;
     }
 
-    public int getRole() {
-        return role;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setRole(int role) {
-        this.role = role;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
@@ -114,25 +147,47 @@ public class UserRegDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserRegDto that = (UserRegDto) o;
-        return Objects.equals(nickname, that.nickname) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(login, that.login) && Objects.equals(password, that.password) && Objects.equals(passwordConfirm, that.passwordConfirm) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone);
+        return id == that.id &&
+                Objects.equals(nickName, that.nickName) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(login, that.login) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(phone, that.phone) &&
+                Objects.equals(companyName, that.companyName) &&
+                Objects.equals(avatar, that.avatar);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nickname, firstName, lastName, login, password, passwordConfirm, email, phone);
+        return Objects.hash(id, nickName, firstName, lastName, login, password, email, phone, companyName, avatar);
+    }
+
+
+
+    public boolean isVerification() {
+        return verification;
+    }
+
+    public void setVerification(boolean verification) {
+        this.verification = verification;
     }
 
     @Override
     public String toString() {
         return "UserRegDto{" +
-                "nickname='" + nickname + '\'' +
+                "id=" + id +
+                ", nickName='" + nickName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                ", passwordConfirm='" + passwordConfirm + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", verification=" + verification +
+                ", companyName='" + companyName + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }
