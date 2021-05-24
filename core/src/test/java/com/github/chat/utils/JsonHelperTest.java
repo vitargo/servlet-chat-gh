@@ -23,7 +23,7 @@ public class JsonHelperTest {
 
     @Test
     public void toJson2() {
-        Token token = new Token("Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
+        Token token = new Token(1L, "Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
         String data = TokenProvider.encode(token);
         Envelope env = new Envelope(Topic.auth, data);
         String result = JsonHelper.toJson(env).get();
@@ -41,7 +41,7 @@ public class JsonHelperTest {
 
     @Test
     public void fromJson2() {
-        Token token = new Token("Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
+        Token token = new Token(1L, "Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
         String cipherToken = TokenProvider.encode(token);
         Envelope env = new Envelope(Topic.auth, cipherToken);
         String res = JsonHelper.toJson(env).orElseThrow();

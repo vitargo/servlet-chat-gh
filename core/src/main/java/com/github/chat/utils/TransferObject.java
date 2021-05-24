@@ -10,6 +10,7 @@ public class TransferObject {
 
     public static User toUser(UserRegDto data) {
         return new User(
+                data.getId(),
                 data.getNickName(),
                 data.getFirstName(),
                 data.getLastName(),
@@ -17,7 +18,9 @@ public class TransferObject {
                 data.getLogin(),
                 data.getPassword(),
                 data.getPhone(),
-                data.getCompanyName()
+                data.isVerification(),
+                data.getCompanyName(),
+                data.getAvatar()
         );
     }
 

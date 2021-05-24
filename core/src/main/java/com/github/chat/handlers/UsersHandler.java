@@ -97,4 +97,31 @@ public class UsersHandler extends HttpServlet {
             }
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        PrintWriter out = resp.getWriter();
+        String body = req.getReader().lines().collect(Collectors.joining());
+        if (!"application/json".equalsIgnoreCase(req.getHeader("Content-Type"))) {
+            resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Invalid content type");
+        } else {
+            String url = req.getRequestURI();
+            if (url.equals("/chat/myaccount")) {
+                String token = req.getHeader("Authorization");
+                Token t = TokenProvider.decode(token);
+                if (TokenProvider.checkToken(t)) {
+                    UserRegDto payload = JsonHelper.fromJson(body, UserRegDto.class).orElseThrow(BadRequest::new);
+                    if (payload != null) {
+                        payload.setId(t.getId());
+                        payload.setVerification(true);
+                        this.usersController.update(payload);
+                        resp.setStatus(200);
+                    } else {
+                        resp.setStatus(403);
+                        out.write("No data to update!");
+                    }
+                }
+            }
+        }
+    }
 }

@@ -7,8 +7,8 @@ import org.junit.Test;
 
 public class TokenProviderTest {
 
-    Token t = new Token("Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
-    Token tAnother = new Token("dfshjdkhfs", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
+    Token t = new Token(1L, "Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
+    Token tAnother = new Token(2L, "dfshjdkhfs", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
     Token tNull = null;
 
     @Test

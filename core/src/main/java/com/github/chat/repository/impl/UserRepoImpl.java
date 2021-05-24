@@ -55,11 +55,22 @@ public class UserRepoImpl implements UsersRepository {
                 if (aqu == null) {
                     aqu = cr.select(root).where(cb.equal(root.get("email"), user.getEmail()));
                     if (aqu == null) {
-                        cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+                        aqu = cr.select(root).where(cb.equal(root.get("id"), user.getId()));
+                        if (aqu == null) {
+                            cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+                        }
                     }
                 }
             } else if (user.getEmail() != null) {
                 aqu = cr.select(root).where(cb.equal(root.get("email"), user.getEmail()));
+                if (aqu == null) {
+                    aqu = cr.select(root).where(cb.equal(root.get("id"), user.getId()));
+                    if (aqu == null) {
+                        cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
+                    }
+                }
+            } else if (user.getId() != 0) {
+                aqu = cr.select(root).where(cb.equal(root.get("id"), user.getId()));
                 if (aqu == null) {
                     cr.select(root).where(cb.equal(root.get("nickName"), user.getNickName()));
                 }
@@ -86,7 +97,9 @@ public class UserRepoImpl implements UsersRepository {
         Transaction transaction = null;
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
+
             session.update(user);
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {

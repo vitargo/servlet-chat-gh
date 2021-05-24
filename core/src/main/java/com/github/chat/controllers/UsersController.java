@@ -28,6 +28,7 @@ public class UsersController {
         if (!Objects.isNull(user) && user.isVerification()) {
             int LIFETIME = 604800000;
             Token token = new Token(
+                    user.getId(),
                     user.getNickName(),
                     System.currentTimeMillis() + LIFETIME,
                     System.currentTimeMillis()
@@ -43,11 +44,12 @@ public class UsersController {
         User newUser = toUser(payload);
         User user = this.usersService.findUser(newUser);
         if (Objects.isNull(user)) {
-            this.usersService.create(toUser(payload));
+            User u = this.usersService.create(toUser(payload));
             log.info("Check the User on uniq and add to db!");
             int LIFETIME = 604800000;
             Token token = new Token(
-                    newUser.getNickName(),
+                    u.getId(),
+                    u.getNickName(),
                     System.currentTimeMillis() + LIFETIME,
                     System.currentTimeMillis()
             );
@@ -68,6 +70,16 @@ public class UsersController {
         } else {
             log.error("Not exist user!");
             return null;
+        }
+    }
+
+    public void update(UserRegDto payload) {
+        User newUser = toUser(payload);
+        User user = this.usersService.findUser(newUser);
+        if (Objects.nonNull(user)) {
+            this.usersService.update(newUser);
+        } else {
+            log.info("This User is not exist!");
         }
     }
 }

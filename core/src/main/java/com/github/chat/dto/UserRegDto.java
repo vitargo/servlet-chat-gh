@@ -1,8 +1,13 @@
 package com.github.chat.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class UserRegDto {
+
+    private long id;
 
     private String nickName;
 
@@ -18,7 +23,11 @@ public class UserRegDto {
 
     private String phone;
 
+    private boolean verification;
+
     private String companyName;
+
+    private String avatar;
 
     public UserRegDto() {}
 
@@ -27,10 +36,18 @@ public class UserRegDto {
         this.nickName = nickName;
     }
 
-    public UserRegDto(String nickName, String firstName,
-                      String lastName, String login,
-                      String password, String email,
-                      String phone, String companyName) {
+    @JsonCreator
+    public UserRegDto(@JsonProperty("id")long id,
+                      @JsonProperty("nickName")String nickName,
+                      @JsonProperty("firstName")String firstName,
+                      @JsonProperty("lastName")String lastName,
+                      @JsonProperty("login")String login,
+                      @JsonProperty("password")String password,
+                      @JsonProperty("email")String email,
+                      @JsonProperty("phone")String phone,
+                      @JsonProperty("companyName")String companyName,
+                      @JsonProperty("avatar")String avatar) {
+        this.id = id;
         this.nickName = nickName;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -38,7 +55,9 @@ public class UserRegDto {
         this.password = password;
         this.email = email;
         this.phone = phone;
+        this.verification = Boolean.FALSE;
         this.companyName = companyName;
+        this.avatar = avatar;
     }
 
 
@@ -106,38 +125,69 @@ public class UserRegDto {
         this.companyName = companyName;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserRegDto that = (UserRegDto) o;
-        return Objects.equals(nickName, that.nickName) &&
+        return id == that.id &&
+                Objects.equals(nickName, that.nickName) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(login, that.login) &&
                 Objects.equals(password, that.password) &&
                 Objects.equals(email, that.email) &&
                 Objects.equals(phone, that.phone) &&
-                Objects.equals(companyName, that.companyName);
+                Objects.equals(companyName, that.companyName) &&
+                Objects.equals(avatar, that.avatar);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nickName, firstName, lastName, login, password, email, phone, companyName);
+        return Objects.hash(id, nickName, firstName, lastName, login, password, email, phone, companyName, avatar);
     }
 
+
+
+    public boolean isVerification() {
+        return verification;
+    }
+
+    public void setVerification(boolean verification) {
+        this.verification = verification;
+    }
 
     @Override
     public String toString() {
         return "UserRegDto{" +
-                "nickName='" + nickName + '\'' +
+                "id=" + id +
+                ", nickName='" + nickName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", verification=" + verification +
                 ", companyName='" + companyName + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }
