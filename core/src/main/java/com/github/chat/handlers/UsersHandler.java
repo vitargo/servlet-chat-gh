@@ -3,10 +3,13 @@ package com.github.chat.handlers;
 import com.github.chat.controllers.UsersController;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
+import com.github.chat.entity.User;
 import com.github.chat.exceptions.BadRequest;
+import com.github.chat.payload.Token;
+import com.github.chat.utils.EmailSender;
 import com.github.chat.utils.JsonHelper;
+import com.github.chat.utils.TokenProvider;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -86,7 +89,6 @@ public class UsersHandler extends HttpServlet {
                 }
                 if (result != null){
                     resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-                    System.out.println(result);;
                     EmailSender.sendEmail(payload.getEmail(), result);
                 } else {
                     resp.setStatus(403);

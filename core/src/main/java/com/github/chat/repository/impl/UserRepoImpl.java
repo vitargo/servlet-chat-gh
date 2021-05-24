@@ -7,10 +7,10 @@ import com.github.chat.utils.HibernateUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -31,7 +31,7 @@ public class UserRepoImpl implements UsersRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            log.error("Enter, {}", e.getMessage());
+            e.printStackTrace();
         }
         return user;
     }
@@ -97,13 +97,15 @@ public class UserRepoImpl implements UsersRepository {
         Transaction transaction = null;
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
+
             session.update(user);
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            log.error("Enter, {}", e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -118,7 +120,7 @@ public class UserRepoImpl implements UsersRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            log.error("Enter, {}", e.getMessage());
+            e.printStackTrace();
         }
     }
 }

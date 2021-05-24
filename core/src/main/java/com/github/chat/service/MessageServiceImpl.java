@@ -2,14 +2,15 @@ package com.github.chat.service;
 
 import com.github.chat.entity.Message;
 import com.github.chat.repository.MessageRepository;
+import com.github.chat.repository.impl.MessageRepoImpl;
 
 import java.util.List;
 
 public class MessageServiceImpl implements IMessageService{
 
-    private final MessageRepository repo;
+    private final MessageRepoImpl repo;
 
-    public MessageServiceImpl(MessageRepository repo) {
+    public MessageServiceImpl(MessageRepoImpl repo) {
         this.repo = repo;
     }
 

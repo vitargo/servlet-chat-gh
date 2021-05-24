@@ -1,22 +1,18 @@
 package com.github.chat.repository.impl;
 
-import com.github.chat.controllers.UsersController;
 import com.github.chat.entity.Message;
-import com.github.chat.entity.User;
 import com.github.chat.repository.MessageRepository;
 import com.github.chat.utils.HibernateUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class MessageRepoImpl implements MessageRepository {
@@ -54,7 +50,7 @@ public class MessageRepoImpl implements MessageRepository {
             CriteriaQuery<Message> cr = cb.createQuery(Message.class);
             Root<Message> root = cr.from(Message.class);
             cr.select(root).where(cb.equal(root.get("chatId"), new Message().getChatId()));
-            TypedQuery<Message> query = session.createQuery(cr);
+            Query<Message> query = session.createQuery(cr);
             List<Message> results = query.getResultList();
             messages.addAll(results);
         } catch (Exception e) {
