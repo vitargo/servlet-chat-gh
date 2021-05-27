@@ -25,11 +25,6 @@ public class MessageServiceImpl implements IMessageService{
     }
 
     @Override
-    public List<Message> findLast30MessageByChatId(Long id) {
-        return this.repo.findLast30MessageByChatId(id);
-    }
-
-    @Override
     public void update(Message message) {
 
     }

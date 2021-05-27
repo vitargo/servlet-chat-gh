@@ -2,6 +2,7 @@ package com.github.chat.handlers;
 
 import com.github.chat.config.ControllerConfig;
 import com.github.chat.controllers.MessagesController;
+import com.github.chat.entity.Message;
 import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.payload.Envelope;
@@ -13,18 +14,20 @@ import org.slf4j.LoggerFactory;
 
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class WebsocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(WebsocketHandler.class);
 
-    private MessagesController messagesController = ControllerConfig.messagesController();
+    private final MessagesController messagesController = ControllerConfig.messagesController();
 
     private final Broker broker;
 
     private final WebsocketConnectionPool websocketConnectionPool;
 
-    String nickname = "";
+    private String nickname = "";
 
     public WebsocketHandler(WebsocketConnectionPool websocketConnectionPool, Broker broker) {
         this.websocketConnectionPool = websocketConnectionPool;
@@ -35,9 +38,8 @@ public class WebsocketHandler {
     public void messages(Session session, String payload){
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
-            Token result = null;
-            long userId;
-            String message = "";
+            Token result;
+            String message;
             switch(env.getTopic()) {
                 case auth:
                     result = TokenProvider.decode(env.getPayload());
@@ -60,7 +62,7 @@ public class WebsocketHandler {
                 default:
             }
         } catch (Throwable e){
-            //TODO single sand to user about an error
+//            TODO single sand to user about an error
             log.warn("Enter: {}", e.getMessage());
         }
     }

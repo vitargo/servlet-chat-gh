@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.List;
 
 public class MessagesController {
 
@@ -20,5 +21,10 @@ public class MessagesController {
 
     public void saveMessage(String nickname, String message) {
         this.messageService.save(new Message(1, nickname, message, new Date()));
+    }
+
+    public List<Message> findMessage() {
+        return this.messageService.findAll();
+
     }
 }

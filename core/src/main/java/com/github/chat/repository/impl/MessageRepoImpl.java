@@ -5,14 +5,9 @@ import com.github.chat.repository.MessageRepository;
 import com.github.chat.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MessageRepoImpl implements MessageRepository {
@@ -40,24 +35,6 @@ public class MessageRepoImpl implements MessageRepository {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.createQuery("select p from Message p", Message.class).list();
         }
-    }
-
-    @Override
-    public List<Message> findLast30MessageByChatId(Long id) {
-        List<Message> messages = new ArrayList<>();
-        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<Message> cr = cb.createQuery(Message.class);
-            Root<Message> root = cr.from(Message.class);
-            cr.select(root).where(cb.equal(root.get("nickname"), new Message().getNickname()));
-            Query<Message> query = session.createQuery(cr);
-            List<Message> results = query.getResultList();
-            messages.addAll(results);
-        } catch (Exception e) {
-            log.error("Enter, {}", e.getMessage());
-            return null;
-        }
-        return messages;
     }
 
     @Override

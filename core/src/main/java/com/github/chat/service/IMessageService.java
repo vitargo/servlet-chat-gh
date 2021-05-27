@@ -10,8 +10,6 @@ public interface IMessageService {
 
     List<Message> findAll();
 
-    List<Message> findLast30MessageByChatId(Long id);
-
     void update(Message message);
 
     void remove(Message message);
