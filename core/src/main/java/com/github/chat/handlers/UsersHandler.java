@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -32,10 +34,22 @@ public class UsersHandler extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try{
             super.service(req, resp);
+            System.out.println(httpServletRequestToString(req));
+
         } catch (BadRequest e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid body");
         }
+    }
 
+    @Override
+    public void doOptions(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        System.out.println("DO OPTIONS");
+        System.out.println(httpServletRequestToString(req));
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH, OPTIONS");
+        resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        resp.setHeader("Content-Type", "application/json");
+        resp.setStatus(204);
     }
 
     @Override
@@ -89,6 +103,7 @@ public class UsersHandler extends HttpServlet {
                 }
                 if (result != null){
                     resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+                    System.out.println(result);;
                     EmailSender.sendEmail(payload.getEmail(), result);
                 } else {
                     resp.setStatus(403);
@@ -122,5 +137,36 @@ public class UsersHandler extends HttpServlet {
                 }
             }
         }
+    }
+
+    private String httpServletRequestToString(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Request Method = [" + request.getMethod() + "], ");
+        sb.append("Request URL Path = [" + request.getRequestURL() + "], ");
+
+        String headers =
+                Collections.list(request.getHeaderNames()).stream()
+                        .map(headerName -> headerName + " : " + Collections.list(request.getHeaders(headerName)) )
+                        .collect(Collectors.joining(", "));
+
+        if (headers.isEmpty()) {
+            sb.append("Request headers: NONE,");
+        } else {
+            sb.append("Request headers: ["+headers+"],");
+        }
+
+        String parameters =
+                Collections.list(request.getParameterNames()).stream()
+                        .map(p -> p + " : " + Arrays.asList( request.getParameterValues(p)) )
+                        .collect(Collectors.joining(", "));
+
+        if (parameters.isEmpty()) {
+            sb.append("Request parameters: NONE.");
+        } else {
+            sb.append("Request parameters: [" + parameters + "].");
+        }
+
+        return sb.toString();
     }
 }
