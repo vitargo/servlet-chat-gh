@@ -48,7 +48,7 @@
             padding: 10px;
             color: #fff;
             width: 13em;
-            background-color:grey;
+            background-color: grey;
             border: 2px solid grey;
         }
 
@@ -227,6 +227,7 @@
     var socket;
     var currentUser;
     var Token
+
     // эта функция сработает при нажатии на кнопку
     function signIn() {
         let login = document.querySelector('#login');
@@ -237,7 +238,7 @@
         //url = window.location.replace("http://localhost:8081/chat/auth");
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function (){
+        xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 switch (xhr.status) {
                     case 200:
@@ -257,14 +258,16 @@
             }
         };
 
-        var data = JSON.stringify({ "login": login.value, "password": password.value });
+        var data = JSON.stringify({"login": login.value, "password": password.value});
         xhr.send(data);
         console.log(xhr.readyState);
     }
-    function connectTo(){
-        console.log(JSON.stringify({"topic":"auth","payload":"" + Token }));
-        socket.send(JSON.stringify({"topic":"auth","payload":"" + Token }));
+
+    function connectTo() {
+        console.log(JSON.stringify({"topic": "auth", "payload": "" + Token}));
+        socket.send(JSON.stringify({"topic": "auth", "payload": "" + Token}));
     }
+
     function openSocket(accessToken) {
         let login = document.querySelector('#login');
         let password = document.querySelector('#password');
@@ -277,12 +280,12 @@
                 console.log(this.responseText);
             }
         };
-        var data = JSON.stringify({ "login": login.value, "password": password.value });
+        var data = JSON.stringify({"login": login.value, "password": password.value});
         console.log(data);
         currentUser = login.value;
         xhrs.send(data);
-        console.log("responseXML"+xhrs.responseXML);
-        console.log("resp  "+xhrs.response.token);
+        console.log("responseXML" + xhrs.responseXML);
+        console.log("resp  " + xhrs.response.token);
         console.log("openSocket");
 
         if (socket) {
@@ -290,7 +293,7 @@
         }
         socket = new WebSocket("ws://localhost:8081/chat");
         xhrs.onload = function () {
-            var au = JSON.stringify({"topic":"auth","payload":xhrs.response});
+            var au = JSON.stringify({"topic": "auth", "payload": xhrs.response});
             console.log(au);
             socket.send(au);
         }
@@ -306,14 +309,17 @@
         socket.onmessage = onMessage;
     }
 
-    var onMessage = function(event) {
+    var onMessage = function (event) {
         var webSocketMessage = JSON.parse(event.data);
         switch (webSocketMessage.topic) {
             case "auth":
                 displayConnectedUserMessage(currentUser);
                 break;
             case "sendTextMessage":
-                displayMessage(currentUser,webSocketMessage.payload);
+                displayMessage(currentUser, webSocketMessage.payload);
+                break;
+            case "disconnect":
+                displayDisconnectedUserMessage(currentUser);
                 break;
         }
     };
@@ -421,8 +427,6 @@
     }
 
 
-
-
 </script>
 <body>
 
@@ -431,7 +435,7 @@
 <form id="authentication" action="UserHandler" method="post" onsubmit="return false;">
     <div style="text-align: right;">
         <a href="/reg">Sing up!</a>
-</div>
+    </div>
     <input type="text" id="login" placeholder="Login" autofocus/>
     <input type="password" id="password" placeholder="Password"/>
     <button class="button" onclick="signIn()">Sign in</button>

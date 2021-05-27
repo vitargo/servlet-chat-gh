@@ -1,5 +1,6 @@
 package com.github.chat.handlers;
 
+import com.github.chat.config.ServerConfig;
 import com.github.chat.controllers.UsersController;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
@@ -108,6 +109,12 @@ public class UsersHandler extends HttpServlet {
                 } else {
                     resp.setStatus(403);
                 }
+            }
+            if (url.equals("/chat/create-chat")) {
+                ServerConfig.createNewRoom(1);
+                // TODO: 27.05.2021 Create room in database 
+                // TODO: 27.05.2021 get id room from database 
+                // TODO: 27.05.2021  
             }
         }
     }
