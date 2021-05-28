@@ -2,11 +2,14 @@ package com.github.chat.entity;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "sc_rooms")
-public class Room {
+public class Room implements Serializable {
+
+    private static final long serialVersionUID = 100L;
 
 
     @Id
