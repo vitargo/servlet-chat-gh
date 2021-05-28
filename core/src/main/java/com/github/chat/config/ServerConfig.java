@@ -4,6 +4,7 @@ import com.github.chat.handlers.PrivateWebsocketHandler;
 import com.github.chat.handlers.WebsocketHandler;
 import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketConnectionPool;
+import com.github.chat.network.WebsocketRoomMap;
 import com.github.chat.utils.ServerRunner;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
@@ -36,35 +37,16 @@ public class ServerConfig {
         tomcat.addServlet("", "UserHandler", HandlerConfig.usersHandler()).setAsyncSupported(true);
         ctx.addServletMappingDecoded("/chat/*", "UserHandler");
         ctx.addApplicationListener(WsContextListener.class.getName());
-        return new ServerRunner(tomcat, ctx, List.of(websocketHandler, websocketHandlerPrivate));
+        return new ServerRunner(tomcat, ctx, List.of(websocketHandler));
     }
 
     private static Consumer<Context> websocketHandler = ctx -> {
-        WebsocketHandler handler = new WebsocketHandler(new WebsocketConnectionPool(), new Broker());
+        WebsocketHandler handler = new WebsocketHandler(new WebsocketRoomMap(), new Broker());
         ServerContainer scon = (ServerContainer) ctx.getServletContext().getAttribute(ServerContainer.class.getName());
         try {
             scon.addEndpoint(ServerEndpointConfig
                     .Builder
                     .create(WebsocketHandler.class, "/chat")
-                    .configurator(new ServerEndpointConfig.Configurator() {
-                        @Override
-                        public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
-                            return (T) handler;
-                        }
-                    })
-                    .build());
-        } catch (final DeploymentException e) {
-            e.printStackTrace();
-        }
-    };
-
-    private static Consumer<Context> websocketHandlerPrivate = ctx -> {
-        PrivateWebsocketHandler handler = new PrivateWebsocketHandler(new WebsocketConnectionPool(), new Broker());
-        ServerContainer scon = (ServerContainer) ctx.getServletContext().getAttribute(ServerContainer.class.getName());
-        try {
-            scon.addEndpoint(ServerEndpointConfig
-                    .Builder
-                    .create(PrivateWebsocketHandler.class, "/private")
                     .configurator(new ServerEndpointConfig.Configurator() {
                         @Override
                         public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {

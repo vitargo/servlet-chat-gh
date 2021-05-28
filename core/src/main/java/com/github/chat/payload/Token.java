@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class Token implements Serializable {
 
+
     long id;
     private String nickname;
     private long expire_in;
