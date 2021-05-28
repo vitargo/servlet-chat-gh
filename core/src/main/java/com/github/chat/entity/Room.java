@@ -23,6 +23,11 @@ public class Room {
     public Room() {
     }
 
+    public Room(String roomName, long adminId) {
+        this.roomName = roomName;
+        this.adminId = adminId;
+    }
+
     public Room(long id, String roomName, long adminId) {
         this.id = id;
         this.roomName = roomName;

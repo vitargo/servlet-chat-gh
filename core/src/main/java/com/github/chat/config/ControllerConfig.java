@@ -7,7 +7,7 @@ public class ControllerConfig {
 
     public static UsersController usersController() {
 
-        return new UsersController(DatabaseConfig.getUsersService());
+        return new UsersController(DatabaseConfig.getUsersService(),DatabaseConfig.getRoomService());
     }
 
     public static MessagesController messagesController() {

@@ -1,9 +1,7 @@
 package com.github.chat.config;
 
-import com.github.chat.handlers.PrivateWebsocketHandler;
 import com.github.chat.handlers.WebsocketHandler;
 import com.github.chat.network.Broker;
-import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.network.WebsocketRoomMap;
 import com.github.chat.utils.ServerRunner;
 import org.apache.catalina.Context;
@@ -46,7 +44,7 @@ public class ServerConfig {
         try {
             scon.addEndpoint(ServerEndpointConfig
                     .Builder
-                    .create(WebsocketHandler.class, "/chat")
+                    .create(WebsocketHandler.class, "/chat/{roomid}")
                     .configurator(new ServerEndpointConfig.Configurator() {
                         @Override
                         public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {

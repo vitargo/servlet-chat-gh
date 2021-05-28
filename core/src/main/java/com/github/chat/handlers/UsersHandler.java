@@ -1,14 +1,17 @@
 package com.github.chat.handlers;
 
 import com.github.chat.controllers.UsersController;
+import com.github.chat.dto.RoomRegDto;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
+import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
 import com.github.chat.exceptions.BadRequest;
 import com.github.chat.payload.Token;
 import com.github.chat.utils.EmailSender;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
+import com.github.chat.utils.TransferObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -107,6 +110,24 @@ public class UsersHandler extends HttpServlet {
                     EmailSender.sendEmail(payload.getEmail(), result);
                 } else {
                     resp.setStatus(403);
+                }
+            }
+            if (url.equals("/chat/createroom")) {
+                String token = req.getHeader("Authorization");
+                Token t = TokenProvider.decode(token);
+                if (TokenProvider.checkToken(t)) {
+                    RoomRegDto payload = JsonHelper.fromJson(body, RoomRegDto.class).orElseThrow(BadRequest::new);
+                    long adminId = t.getId();
+                    payload.setAdminId(adminId);
+                    Room result = null;
+                    if (payload != null) {
+                        result = this.usersController.regRoom(payload);
+                    }
+                    if (result != null){
+                        resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+                    } else {
+                        resp.setStatus(403);
+                    }
                 }
             }
         }

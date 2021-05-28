@@ -1,7 +1,9 @@
 package com.github.chat.utils;
 
+import com.github.chat.dto.RoomRegDto;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
+import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
 import com.github.chat.payload.Token;
 
@@ -41,5 +43,9 @@ public class TransferObject {
         return new User(
                 token.getNickname()
         );
+    }
+
+    public static Room toRoom(RoomRegDto roomRegDto) {
+        return new Room(roomRegDto.getNameRoom(), roomRegDto.getAdminId());
     }
 }

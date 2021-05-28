@@ -7,16 +7,16 @@ import com.github.chat.entity.User;
 import java.util.Collection;
 import java.util.List;
 
-public interface UsersRepository {
+public interface Repository<T> {
 
-    User save(User user);
+    T save(T entity);
 
-    List<User> findAll();
+    List<T> findAll();
 
-    User findBy(User user);
+    T findBy(T t);
 
-    void update(User user);
+    void update(T entity);
 
-    void remove(User user);
+    void remove(T entity);
 
 }

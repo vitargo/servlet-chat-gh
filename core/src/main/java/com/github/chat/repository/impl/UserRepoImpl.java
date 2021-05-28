@@ -2,7 +2,7 @@ package com.github.chat.repository.impl;
 
 import com.github.chat.controllers.UsersController;
 import com.github.chat.entity.User;
-import com.github.chat.repository.UsersRepository;
+import com.github.chat.repository.Repository;
 import com.github.chat.utils.HibernateUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -16,7 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class UserRepoImpl implements UsersRepository {
+public class UserRepoImpl implements Repository<User> {
 
     private static final Logger log = LoggerFactory.getLogger(UsersController.class);
 
