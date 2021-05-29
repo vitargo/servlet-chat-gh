@@ -50,7 +50,7 @@ public class UsersController {
         User newUser = toUser(payload);
         User user = (User) this.usersService.findUser(newUser);
         if (Objects.isNull(user)) {
-            User u = (User) this.usersService.create(toUser(payload));
+            User u = (User) this.usersService.create(newUser);
             log.info("Check the User on uniq and add to db!");
             int LIFETIME = 604800000;
             Token token = new Token(

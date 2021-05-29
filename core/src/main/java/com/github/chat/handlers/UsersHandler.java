@@ -11,7 +11,6 @@ import com.github.chat.payload.Token;
 import com.github.chat.utils.EmailSender;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
-import com.github.chat.utils.TransferObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -47,7 +46,6 @@ public class UsersHandler extends HttpServlet {
     @Override
     public void doOptions(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         System.out.println("DO OPTIONS");
-        System.out.println(httpServletRequestToString(req));
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH, OPTIONS");
         resp.setHeader("Access-Control-Allow-Headers", "Content-Type");

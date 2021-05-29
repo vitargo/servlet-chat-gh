@@ -81,7 +81,6 @@ public class User implements Serializable {
         this.password = hash[1];
         this.phone = phone;
         this.role = 2;
-        this.verification = Boolean.FALSE;
         this.companyName = companyName;
         this.salt = hash[0];
         this.avatar = avatar;
@@ -89,7 +88,7 @@ public class User implements Serializable {
 
     public User(long id, String nickName, String firstName,
                 String lastName, String email, String login,
-                String password, String phone, boolean verification,
+                String password, String phone,
                 String companyName, String avatar) {
         this.id = id;
         String[] hash = new String[2];
@@ -104,7 +103,6 @@ public class User implements Serializable {
         this.password = hash[1];
         this.phone = phone;
         this.role = 2;
-        this.verification = verification;
         this.companyName = companyName;
         this.salt = hash[0];
         this.avatar = avatar;

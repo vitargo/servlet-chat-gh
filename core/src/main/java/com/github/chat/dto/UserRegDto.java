@@ -55,7 +55,6 @@ public class UserRegDto {
         this.password = password;
         this.email = email;
         this.phone = phone;
-        this.verification = Boolean.FALSE;
         this.companyName = companyName;
         this.avatar = avatar;
     }

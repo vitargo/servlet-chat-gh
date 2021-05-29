@@ -21,7 +21,6 @@ public class TransferObject {
                 data.getLogin(),
                 data.getPassword(),
                 data.getPhone(),
-                data.isVerification(),
                 data.getCompanyName(),
                 data.getAvatar()
         );
