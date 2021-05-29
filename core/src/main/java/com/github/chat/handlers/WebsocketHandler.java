@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
+import java.util.List;
 
 public class WebsocketHandler {
 
@@ -46,11 +47,15 @@ public class WebsocketHandler {
                     result = TokenProvider.decode(env.getPayload());
                     nickname = result.getNickname();
                     this.websocketRoomMap.addSession(idRoom,nickname,session);
+                    List<Session> ssessia = websocketRoomMap.getSessions(idRoom);
+                    System.out.printf(String.valueOf(ssessia));
                     broker.broadcast(websocketRoomMap.getSessions(idRoom), env);
                     break;
                 case sendTextMessage:
                     message = env.getPayload();
-                    messagesController.saveMessage(nickname, message);
+                    System.out.println("lox podzalupniy prislal vam soobsheniye");
+                    messagesController.saveMessage(nickname, message,idRoom);
+                    System.out.println(idRoom);
                     this.broker.broadcast(this.websocketRoomMap.getSessions(idRoom),env);
                     break;
                 case disconnect:

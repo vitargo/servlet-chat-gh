@@ -10,6 +10,7 @@ public class WebsocketConnectionPool {
     private ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
 
     public void addSession(String nickname, Session session) {
+        System.out.println("Add session");
         this.sessions.put(nickname, session);
     }
 

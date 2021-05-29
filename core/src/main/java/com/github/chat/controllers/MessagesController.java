@@ -19,8 +19,8 @@ public class MessagesController {
         this.messageService = messageService;
     }
 
-    public void saveMessage(String nickname, String message) {
-        this.messageService.save(new Message(1, nickname, message, new Date()));
+    public void saveMessage(String nickname, String message, Integer roomId) {
+        this.messageService.save(new Message(roomId, nickname, message, new Date()));
     }
 
     public List<Message> findMessage() {
