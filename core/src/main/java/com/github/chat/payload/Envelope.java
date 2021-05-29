@@ -6,13 +6,16 @@ public class Envelope {
 
     private Topic topic;
 
+    private Integer roomId;
+
     private String payload;
 
     public Envelope() {
     }
 
-    public Envelope(Topic topic, String payload) {
+    public Envelope(Topic topic, Integer roomId, String payload) {
         this.topic = topic;
+        this.roomId = roomId;
         this.payload = payload;
     }
 
@@ -20,8 +23,24 @@ public class Envelope {
         return topic;
     }
 
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+
     public String getPayload() {
         return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 
     @Override
@@ -29,18 +48,19 @@ public class Envelope {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Envelope envelope = (Envelope) o;
-        return Objects.equals(topic, envelope.topic) && Objects.equals(payload, envelope.payload);
+        return topic == envelope.topic && Objects.equals(roomId, envelope.roomId) && Objects.equals(payload, envelope.payload);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(topic, payload);
+        return Objects.hash(topic, roomId, payload);
     }
 
     @Override
     public String toString() {
         return "Envelope{" +
                 "topic=" + topic +
+                ", roomId=" + roomId +
                 ", payload='" + payload + '\'' +
                 '}';
     }

@@ -28,7 +28,7 @@ public class WebsocketHandler {
 
     private final WebsocketRoomMap websocketRoomMap;
 
-    private Long idRoom = 1L;
+    private Integer idRoom = 1;
 
     private String nickname = "";
 
@@ -43,6 +43,7 @@ public class WebsocketHandler {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
             Token result;
             String message;
+            idRoom = env.getRoomId();
             switch(env.getTopic()) {
                 case auth:
                     result = TokenProvider.decode(env.getPayload());
