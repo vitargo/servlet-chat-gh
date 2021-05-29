@@ -2,9 +2,7 @@ package com.github.chat.handlers;
 
 import com.github.chat.config.ControllerConfig;
 import com.github.chat.controllers.MessagesController;
-import com.github.chat.entity.Message;
 import com.github.chat.network.Broker;
-import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.network.WebsocketRoomMap;
 import com.github.chat.payload.Envelope;
 import com.github.chat.payload.Token;
@@ -15,8 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class WebsocketHandler {
 
@@ -41,6 +37,7 @@ public class WebsocketHandler {
     public void messages(Session session, String payload){
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
+            System.out.println(env);
             Token result;
             String message;
             switch(env.getTopic()) {

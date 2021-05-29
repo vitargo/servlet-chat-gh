@@ -36,7 +36,7 @@ public class UsersHandler extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try{
             super.service(req, resp);
-            System.out.println(httpServletRequestToString(req));
+            System.out.println("In Servise");
 
         } catch (BadRequest e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid body");
@@ -46,36 +46,44 @@ public class UsersHandler extends HttpServlet {
     @Override
     public void doOptions(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         System.out.println("DO OPTIONS");
+        System.out.println(httpServletRequestToString(req));
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH, OPTIONS");
         resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
         resp.setHeader("Content-Type", "application/json");
         resp.setStatus(204);
+        System.out.println("Response 204");;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
         String url = req.getRequestURI();
-        String[] urlSplit = url.split("/", 4);
-        if(urlSplit[2].equals("verification")) {
-            Token t = TokenProvider.decode(urlSplit[3]);
-            if(TokenProvider.checkToken(t)) {
-                User user = this.usersController.confirmation(new UserRegDto(t.getNickname()));
-                if(Objects.nonNull(user)){
-                    resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+        if(url.substring(1).contains("/")){
+            String[] urlSplit = url.split("/", 4);
+            if(urlSplit[2].equals("verification")) {
+                Token t = TokenProvider.decode(urlSplit[3]);
+                if(TokenProvider.checkToken(t)) {
+                    User user = this.usersController.confirmation(new UserRegDto(t.getNickname()));
+                    if(Objects.nonNull(user)){
+                        resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    }
                 } else {
                     resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    out.write("Expired token!");
                 }
-            } else {
-                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                out.write("Expired token!");
             }
+        } else {
+            System.out.println(httpServletRequestToString(req));
         }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        System.out.println("DO POST");
         PrintWriter out = resp.getWriter();
         String body = req.getReader().lines().collect(Collectors.joining());
         if (!"application/json".equalsIgnoreCase(req.getHeader("Content-Type"))) {
@@ -90,10 +98,13 @@ public class UsersHandler extends HttpServlet {
                 }
                 if (!Objects.isNull(result)){
                     resp.setContentType("text/html");
+                    resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setStatus(200);
                     out.write(result);
+                    System.out.println("Send 200");
                 } else {
                     resp.setStatus(403);
+                    System.out.println("Send 403");
                 }
             }
             if (url.equals("/chat/reg")) {
