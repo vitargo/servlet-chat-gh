@@ -28,7 +28,7 @@ public class WebsocketHandler {
 
     private final WebsocketRoomMap websocketRoomMap;
 
-    private Integer idRoom = 1;
+    private Integer idRoom = 12;
 
     private String nickname = "";
 
