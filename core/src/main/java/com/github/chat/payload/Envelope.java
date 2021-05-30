@@ -22,6 +22,11 @@ public class Envelope {
         this.payload = payload;
     }
 
+    public Envelope(Topic topic, String payload) {
+        this.topic = topic;
+        this.payload = payload;
+    }
+
     public Topic getTopic() {
         return topic;
     }

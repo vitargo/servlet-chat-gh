@@ -3,6 +3,7 @@ package com.github.chat.handlers;
 import com.github.chat.entity.User;
 import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketConnectionPool;
+import com.github.chat.network.WebsocketRoomMap;
 import com.github.chat.payload.Envelope;
 import com.github.chat.payload.Token;
 import com.github.chat.payload.Topic;
@@ -22,25 +23,28 @@ public class WebsocketHandler {
 
     private final Broker broker;
 
-    private final WebsocketConnectionPool websocketConnectionPool;
+    private final WebsocketRoomMap websocketRoomMap;
 
-    public WebsocketHandler(WebsocketConnectionPool websocketConnectionPool, Broker broker) {
-        this.websocketConnectionPool = websocketConnectionPool;
+
+    public WebsocketHandler(WebsocketRoomMap websocketRoomMap, Broker broker) {
+        this.websocketRoomMap = websocketRoomMap;
         this.broker = broker;
     }
 
     @OnMessage
-    public void messages(Session session, String payload){
+    public void messages(Session session, String payload) {
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
             Token result;
             long id;
-            switch(env.getTopic()) {
+            switch (env.getTopic()) {
                 case auth:
+                    log.info("auth: " + env);
                     System.out.println(env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
                     id = result.getId();
-                    this.websocketConnectionPool.addSession(id,session);
+                    this.websocketRoomMap.addSession(env.getRoomId(), id, session);
+                    WebsocketConnectionPool websocketConnectionPool = this.websocketRoomMap.getWSPool(env.getRoomId());
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     List<Long> allId = websocketConnectionPool.getAllUsersOnLine();
                     List<User> allOnLine = UserRepoImpl.findByIdList(allId);
@@ -49,10 +53,13 @@ public class WebsocketHandler {
                     broker.broadcast(websocketConnectionPool.getSessions(), allUsers);
                     break;
                 case message:
-                    this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
+                    log.info("message: " + env);
+                    websocketConnectionPool = this.websocketRoomMap.getWSPool(env.getRoomId());
+                    this.broker.broadcast(this.websocketRoomMap.getSessions(env.getRoomId()), env);
                     break;
                 case disconnect:
-                    broker.broadcast(this.websocketConnectionPool.getSessions(), env);
+                    websocketConnectionPool = this.websocketRoomMap.getWSPool(env.getRoomId());
+                    broker.broadcast(websocketConnectionPool.getSessions(), env);
                     result = TokenProvider.decode(env.getPayload());
                     id = result.getId();
                     websocketConnectionPool.removeSession(id);
@@ -60,7 +67,7 @@ public class WebsocketHandler {
                     break;
                 default:
             }
-        } catch (Throwable e){
+        } catch (Throwable e) {
             log.warn("Enter: {}", e.getMessage());
         }
     }

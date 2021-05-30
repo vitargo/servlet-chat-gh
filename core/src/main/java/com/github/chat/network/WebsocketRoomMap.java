@@ -15,21 +15,25 @@ public class WebsocketRoomMap {
         this.roomSession = roomSession;
     }
 
-    public void addSession(Integer idRoom, String nickname, Session session) {
+    public void addSession(Integer idRoom, Long userId, Session session) {
         if (Objects.isNull(this.roomSession)) {
             WebsocketConnectionPool ws = new WebsocketConnectionPool();
-            ws.addSession(nickname, session);
-            this.roomSession.put(idRoom,ws);
+            ws.addSession(userId, session);
+            this.roomSession.put(idRoom, ws);
         }
         if (this.roomSession.containsKey(idRoom)) {
             System.out.println("11");
-            this.roomSession.get(idRoom).addSession(nickname, session);
+            this.roomSession.get(idRoom).addSession(userId, session);
         } else {
             System.out.println("ss");
             WebsocketConnectionPool ws = new WebsocketConnectionPool();
-            ws.addSession(nickname, session);
+            ws.addSession(userId, session);
             this.roomSession.put(idRoom, ws);
         }
+    }
+
+    public WebsocketConnectionPool getWSPool(Integer idRoom) {
+        return this.roomSession.get(idRoom);
     }
 
     public List<Session> getSessions(Integer idRoom) {
@@ -37,13 +41,13 @@ public class WebsocketRoomMap {
         return room.getSessions();
     }
 
-    public void removeUserFromSession(Integer idRoom, String nickname) {
-        this.roomSession.get(idRoom).removeSession(nickname);
+    public void removeUserFromSession(Integer idRoom, Long userId) {
+        this.roomSession.get(idRoom).removeSession(userId);
     }
 
-    public void closeSession(Integer idRoom, String nickname) {
+    public void closeSession(Integer idRoom, Long UserId) {
         try {
-            this.roomSession.get(idRoom).getSession(nickname).close();
+            this.roomSession.get(idRoom).getSession(UserId).close();
         } catch (IOException e) {
             e.printStackTrace();
         }
