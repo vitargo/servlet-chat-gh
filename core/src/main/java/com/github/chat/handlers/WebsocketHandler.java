@@ -2,6 +2,7 @@ package com.github.chat.handlers;
 
 import com.github.chat.config.ControllerConfig;
 import com.github.chat.controllers.MessagesController;
+import com.github.chat.dto.MessageDto;
 import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketRoomMap;
 import com.github.chat.payload.Envelope;
@@ -25,7 +26,7 @@ public class WebsocketHandler {
 
     private final WebsocketRoomMap websocketRoomMap;
 
-    private Integer idRoom = 12;
+    private Integer idRoom = 1;
 
     private String nickname = "";
 
@@ -46,6 +47,10 @@ public class WebsocketHandler {
                 case auth:
                     result = TokenProvider.decode(env.getPayload());
                     nickname = result.getNickname();
+                    System.out.println(nickname);
+                    MessageDto payloadDto = JsonHelper.fromJson(env.getPayload(), MessageDto.class).orElseThrow();
+                    nickname = payloadDto.getNickname();
+                    System.out.println(nickname);
                     this.websocketRoomMap.addSession(idRoom,nickname,session);
                     List<Session> ssessia = websocketRoomMap.getSessions(idRoom);
                     System.out.printf(String.valueOf(ssessia));
@@ -53,7 +58,6 @@ public class WebsocketHandler {
                     break;
                 case messages:
                     message = env.getPayload();
-                    System.out.println("lox podzalupniy prislal vam soobsheniye");
                     messagesController.saveMessage(nickname, message,idRoom);
                     System.out.println(idRoom);
                     this.broker.broadcast(this.websocketRoomMap.getSessions(idRoom),env);
