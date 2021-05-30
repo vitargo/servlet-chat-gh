@@ -1,9 +1,7 @@
 package com.github.chat.handlers;
 
-import com.github.chat.config.ControllerConfig;
-import com.github.chat.controllers.MessagesController;
 import com.github.chat.network.Broker;
-import com.github.chat.network.WebsocketRoomMap;
+import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.payload.Envelope;
 import com.github.chat.payload.Token;
 import com.github.chat.utils.JsonHelper;
@@ -18,18 +16,12 @@ public class WebsocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(WebsocketHandler.class);
 
-    private final MessagesController messagesController = ControllerConfig.messagesController();
-
     private final Broker broker;
 
-    private final WebsocketRoomMap websocketRoomMap;
+    private final WebsocketConnectionPool websocketConnectionPool;
 
-    private Long idRoom = 1L;
-
-    private String nickname = "";
-
-    public WebsocketHandler(WebsocketRoomMap websocketRoomMap, Broker broker) {
-        this.websocketRoomMap = websocketRoomMap;
+    public WebsocketHandler(WebsocketConnectionPool websocketConnectionPool, Broker broker) {
+        this.websocketConnectionPool = websocketConnectionPool;
         this.broker = broker;
     }
 
@@ -37,36 +29,34 @@ public class WebsocketHandler {
     public void messages(Session session, String payload){
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
-            System.out.println(env);
+            System.out.println("1" + env);
             Token result;
-            String message;
+            long id;
             switch(env.getTopic()) {
                 case auth:
+                    System.out.println("2 - auth");
+                    System.out.println("3" + env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
-                    nickname = result.getNickname();
-                    this.websocketRoomMap.addSession(idRoom,nickname,session);
-                    broker.broadcast(websocketRoomMap.getSessions(idRoom), env);
+                    id = result.getId();
+                    this.websocketConnectionPool.addSession(id,session);
+                    broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
-                case sendTextMessage:
-                    message = env.getPayload();
-                    messagesController.saveMessage(nickname, message);
-                    this.broker.broadcast(this.websocketRoomMap.getSessions(idRoom),env);
+                case message:
+                    System.out.println("4 - massage");
+                    this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     break;
                 case disconnect:
-                    broker.broadcast(this.websocketRoomMap.getSessions(idRoom), env);
+                    System.out.println("5 - disconnect");
+                    broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     result = TokenProvider.decode(env.getPayload());
-                    nickname = result.getNickname();
-                    websocketRoomMap.removeUserFromSession(idRoom,nickname);
+                    id = result.getId();
+                    websocketConnectionPool.removeSession(id);
+                    websocketConnectionPool.getSession(id).close();
                     break;
                 default:
             }
         } catch (Throwable e){
-//            TODO single sand to user about an error
             log.warn("Enter: {}", e.getMessage());
         }
-    }
-
-    public WebsocketRoomMap getWebsocketRoomMap() {
-        return websocketRoomMap;
     }
 }

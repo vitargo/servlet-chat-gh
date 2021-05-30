@@ -37,6 +37,7 @@ public class UsersHandler extends HttpServlet {
         try{
             super.service(req, resp);
             System.out.println("In Servise");
+            System.out.println(httpServletRequestToString(req));
 
         } catch (BadRequest e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid body");
@@ -92,17 +93,20 @@ public class UsersHandler extends HttpServlet {
             String url = req.getRequestURI();
             if (url.equals("/chat/auth")) {
                 UserAuthDto payload = JsonHelper.fromJson(body, UserAuthDto.class).orElseThrow(BadRequest::new);
-                String result = null;
+                String[] result = null;
+
                 if(payload != null){
                     result = this.usersController.auth(payload);
                 }
-                if (!Objects.isNull(result)){
+                if (Objects.nonNull(result)){
                     resp.setContentType("text/html");
                     resp.setHeader("Access-Control-Allow-Origin", "*");
+                    resp.setHeader("Authorization", result[1]);
                     resp.setStatus(200);
-                    out.write(result);
+                    out.write(result[0]);
                     System.out.println("Send 200");
                 } else {
+                    resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setStatus(403);
                     System.out.println("Send 403");
                 }
@@ -114,10 +118,12 @@ public class UsersHandler extends HttpServlet {
                     result = this.usersController.reg(payload);
                 }
                 if (result != null){
-                    resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+                    resp.setHeader("Access-Control-Allow-Origin", "*");
+                    resp.setStatus(200);
                     System.out.println(result);;
                     EmailSender.sendEmail(payload.getEmail(), result);
                 } else {
+                    resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setStatus(403);
                 }
             }

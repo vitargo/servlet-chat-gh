@@ -2,7 +2,7 @@ package com.github.chat.config;
 
 import com.github.chat.handlers.WebsocketHandler;
 import com.github.chat.network.Broker;
-import com.github.chat.network.WebsocketRoomMap;
+import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.utils.ServerRunner;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
@@ -39,12 +39,12 @@ public class ServerConfig {
     }
 
     private static Consumer<Context> websocketHandler = ctx -> {
-        WebsocketHandler handler = new WebsocketHandler(new WebsocketRoomMap(), new Broker());
+        WebsocketHandler handler = new WebsocketHandler(new WebsocketConnectionPool(), new Broker());
         ServerContainer scon = (ServerContainer) ctx.getServletContext().getAttribute(ServerContainer.class.getName());
         try {
             scon.addEndpoint(ServerEndpointConfig
                     .Builder
-                    .create(WebsocketHandler.class, "/chat/{roomid}")
+                    .create(WebsocketHandler.class, "/chat")
                     .configurator(new ServerEndpointConfig.Configurator() {
                         @Override
                         public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {

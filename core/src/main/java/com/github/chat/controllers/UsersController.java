@@ -29,8 +29,9 @@ public class UsersController {
         this.roomService = roomService;
     }
 
-    public String auth(UserAuthDto payload) {
-        User user = (User) this.usersService.findUser(toUser(payload));
+    public String[] auth(UserAuthDto payload) {
+        String[] auth = new String[2];
+        User user = this.usersService.findUser(toUser(payload));
         if (!Objects.isNull(user) && user.isVerification()) {
             int LIFETIME = 604800000;
             Token token = new Token(
@@ -40,7 +41,9 @@ public class UsersController {
                     System.currentTimeMillis()
             );
             log.info("Generate authorization token successfully!");
-            return TokenProvider.encode(token);
+            auth[0] = user.getNickName();
+            auth[1] = TokenProvider.encode(token);
+            return auth;
         } else {
             return null;
         }
@@ -48,9 +51,9 @@ public class UsersController {
 
     public String reg(UserRegDto payload) {
         User newUser = toUser(payload);
-        User user = (User) this.usersService.findUser(newUser);
+        User user = this.usersService.findUser(newUser);
         if (Objects.isNull(user)) {
-            User u = (User) this.usersService.create(newUser);
+            User u = this.usersService.create(newUser);
             log.info("Check the User on uniq and add to db!");
             int LIFETIME = 604800000;
             Token token = new Token(
@@ -68,7 +71,7 @@ public class UsersController {
     }
 
     public User confirmation(UserRegDto payload) {
-        User user = (User) this.usersService.findUser(toUser(payload));
+        User user = this.usersService.findUser(toUser(payload));
         if (Objects.nonNull(user)) {
             user.setVerification(true);
             this.usersService.update(user);
@@ -81,7 +84,7 @@ public class UsersController {
 
     public void update(UserRegDto payload) {
         User newUser = toUser(payload);
-        User user = (User) this.usersService.findUser(newUser);
+        User user = this.usersService.findUser(newUser);
         if (Objects.nonNull(user)) {
             this.usersService.update(newUser);
         } else {
