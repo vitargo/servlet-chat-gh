@@ -9,12 +9,16 @@ public class WebsocketConnectionPool {
 
     private ConcurrentHashMap<Long, Session> sessions = new ConcurrentHashMap<>();
 
-    public void addSession(Long id, Session session) {
+    public void addSession(long id, Session session) {
         this.sessions.put(id, session);
     }
 
     public List<Session> getSessions() {
         return new ArrayList<>(this.sessions.values());
+    }
+
+    public List<Long> getAllUsersOnLine() {
+        return new ArrayList<>(this.sessions.keySet());
     }
 
     public void removeSession(long id) {

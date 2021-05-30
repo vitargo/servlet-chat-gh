@@ -13,6 +13,11 @@ public class Envelope {
     public Envelope() {
     }
 
+    public Envelope(Topic topic, String payload) {
+        this.topic = topic;
+        this.payload = payload;
+    }
+
     @Override
     public String toString() {
         return "Envelope{" +

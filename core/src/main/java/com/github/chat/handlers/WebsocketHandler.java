@@ -1,9 +1,12 @@
 package com.github.chat.handlers;
 
+import com.github.chat.entity.User;
 import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.payload.Envelope;
 import com.github.chat.payload.Token;
+import com.github.chat.payload.Topic;
+import com.github.chat.repository.impl.UserRepoImpl;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
 import org.slf4j.Logger;
@@ -11,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
+import java.util.List;
 
 public class WebsocketHandler {
 
@@ -38,6 +42,11 @@ public class WebsocketHandler {
                     id = result.getId();
                     this.websocketConnectionPool.addSession(id,session);
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
+                    List<Long> allId = websocketConnectionPool.getAllUsersOnLine();
+                    List<User> allOnLine = UserRepoImpl.findByIdList(allId);
+                    String all = JsonHelper.toJson(allOnLine).get();
+                    Envelope allUsers = new Envelope(Topic.allUsersOnLine, all);
+                    broker.broadcast(websocketConnectionPool.getSessions(), allUsers);
                     break;
                 case message:
                     this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
