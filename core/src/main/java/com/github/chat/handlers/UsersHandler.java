@@ -65,7 +65,10 @@ public class UsersHandler extends HttpServlet {
         String url = req.getRequestURI();
         if (url.endsWith("/chat")) {
             out.write(JsonHelper.toJson(this.messagesController.findByRoom(1)).get());
+        } else if (url.endsWith("{chatId}")) {
+            out.write(JsonHelper.toJson(this.messagesController.findByRoom(Integer.valueOf("{chatId}"))).get());
         }
+
         if(url.substring(1).contains("/")){
             String[] urlSplit = url.split("/", 4);
             if(urlSplit[2].equals("verification")) {
