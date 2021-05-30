@@ -1,5 +1,6 @@
 package com.github.chat.controllers;
 
+import com.github.chat.dto.ConfirmDto;
 import com.github.chat.dto.RoomRegDto;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
@@ -7,6 +8,7 @@ import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
 import com.github.chat.payload.Token;
 import com.github.chat.service.IService;
+import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
 import com.github.chat.utils.TransferObject;
 import org.slf4j.Logger;
@@ -30,7 +32,7 @@ public class UsersController {
     }
 
     public String auth(UserAuthDto payload) {
-        User user = (User) this.usersService.findUser(toUser(payload));
+        User user = this.usersService.findUser(toUser(payload));
         if (!Objects.isNull(user) && user.isVerification()) {
             int LIFETIME = 604800000;
             Token token = new Token(
@@ -40,7 +42,8 @@ public class UsersController {
                     System.currentTimeMillis()
             );
             log.info("Generate authorization token successfully!");
-            return TokenProvider.encode(token);
+            ConfirmDto c = new ConfirmDto(user.getNickName(), TokenProvider.encode(token));
+            return JsonHelper.toJson(c).get();
         } else {
             return null;
         }
@@ -48,9 +51,9 @@ public class UsersController {
 
     public String reg(UserRegDto payload) {
         User newUser = toUser(payload);
-        User user = (User) this.usersService.findUser(newUser);
+        User user = this.usersService.findUser(newUser);
         if (Objects.isNull(user)) {
-            User u = (User) this.usersService.create(newUser);
+            User u = this.usersService.create(newUser);
             log.info("Check the User on uniq and add to db!");
             int LIFETIME = 604800000;
             Token token = new Token(
@@ -68,7 +71,7 @@ public class UsersController {
     }
 
     public User confirmation(UserRegDto payload) {
-        User user = (User) this.usersService.findUser(toUser(payload));
+        User user = this.usersService.findUser(toUser(payload));
         if (Objects.nonNull(user)) {
             user.setVerification(true);
             this.usersService.update(user);
@@ -81,7 +84,7 @@ public class UsersController {
 
     public void update(UserRegDto payload) {
         User newUser = toUser(payload);
-        User user = (User) this.usersService.findUser(newUser);
+        User user = this.usersService.findUser(newUser);
         if (Objects.nonNull(user)) {
             this.usersService.update(newUser);
         } else {

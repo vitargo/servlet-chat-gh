@@ -1,12 +1,12 @@
 package com.github.chat.handlers;
 
-import com.github.chat.config.ControllerConfig;
-import com.github.chat.controllers.MessagesController;
-import com.github.chat.dto.MessageDto;
+import com.github.chat.entity.User;
 import com.github.chat.network.Broker;
-import com.github.chat.network.WebsocketRoomMap;
+import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.payload.Envelope;
 import com.github.chat.payload.Token;
+import com.github.chat.payload.Topic;
+import com.github.chat.repository.impl.UserRepoImpl;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
 import org.slf4j.Logger;
@@ -20,18 +20,12 @@ public class WebsocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(WebsocketHandler.class);
 
-    private final MessagesController messagesController = ControllerConfig.messagesController();
-
     private final Broker broker;
 
-    private final WebsocketRoomMap websocketRoomMap;
+    private final WebsocketConnectionPool websocketConnectionPool;
 
-    private Integer idRoom = 1;
-
-    private String nickname = "";
-
-    public WebsocketHandler(WebsocketRoomMap websocketRoomMap, Broker broker) {
-        this.websocketRoomMap = websocketRoomMap;
+    public WebsocketHandler(WebsocketConnectionPool websocketConnectionPool, Broker broker) {
+        this.websocketConnectionPool = websocketConnectionPool;
         this.broker = broker;
     }
 
@@ -39,44 +33,35 @@ public class WebsocketHandler {
     public void messages(Session session, String payload){
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
-            System.out.println(env);
             Token result;
-            String message;
-            idRoom = env.getRoomId();
+            long id;
             switch(env.getTopic()) {
                 case auth:
+                    System.out.println(env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
-                    nickname = result.getNickname();
-                    System.out.println(nickname);
-                    MessageDto payloadDto = JsonHelper.fromJson(env.getPayload(), MessageDto.class).orElseThrow();
-                    nickname = payloadDto.getNickname();
-                    System.out.println(nickname);
-                    this.websocketRoomMap.addSession(idRoom,nickname,session);
-                    List<Session> ssessia = websocketRoomMap.getSessions(idRoom);
-                    System.out.printf(String.valueOf(ssessia));
-                    broker.broadcast(websocketRoomMap.getSessions(idRoom), env);
+                    id = result.getId();
+                    this.websocketConnectionPool.addSession(id,session);
+                    broker.broadcast(websocketConnectionPool.getSessions(), env);
+                    List<Long> allId = websocketConnectionPool.getAllUsersOnLine();
+                    List<User> allOnLine = UserRepoImpl.findByIdList(allId);
+                    String all = JsonHelper.toJson(allOnLine).get();
+                    Envelope allUsers = new Envelope(Topic.allUsersOnLine, all);
+                    broker.broadcast(websocketConnectionPool.getSessions(), allUsers);
                     break;
-                case messages:
-                    message = env.getPayload();
-                    messagesController.saveMessage(nickname, message,idRoom);
-                    System.out.println(idRoom);
-                    this.broker.broadcast(this.websocketRoomMap.getSessions(idRoom),env);
+                case message:
+                    this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     break;
                 case disconnect:
-                    broker.broadcast(this.websocketRoomMap.getSessions(idRoom), env);
+                    broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     result = TokenProvider.decode(env.getPayload());
-                    nickname = result.getNickname();
-                    websocketRoomMap.removeUserFromSession(idRoom,nickname);
+                    id = result.getId();
+                    websocketConnectionPool.removeSession(id);
+                    websocketConnectionPool.getSession(id).close();
                     break;
                 default:
             }
         } catch (Throwable e){
-//            TODO single sand to user about an error
             log.warn("Enter: {}", e.getMessage());
         }
-    }
-
-    public WebsocketRoomMap getWebsocketRoomMap() {
-        return websocketRoomMap;
     }
 }

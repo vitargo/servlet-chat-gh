@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepoImpl implements Repository<User> {
@@ -121,6 +122,22 @@ public class UserRepoImpl implements Repository<User> {
                 transaction.rollback();
             }
             e.printStackTrace();
+        }
+    }
+
+    public static List<User> findByIdList(List<Long> id){
+        List<User> users = new ArrayList<>();
+        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+            for (Long oneId:id) {
+                Query<User> query = session.createQuery("select p from User p where id = :id", User.class);
+                query.setParameter("id", oneId);
+                if (query.uniqueResultOptional().orElse(null) != null) {
+                    users.add(query.getSingleResult());
+                } else {
+                    System.out.println("Not found User with id = " + oneId);
+                }
+            }
+            return users;
         }
     }
 }
