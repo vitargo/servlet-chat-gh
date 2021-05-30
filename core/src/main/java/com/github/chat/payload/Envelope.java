@@ -6,13 +6,25 @@ public class Envelope {
 
     private Topic topic;
 
+    private String nickName;
+
     private String payload;
 
     public Envelope() {
     }
 
-    public Envelope(Topic topic, String payload) {
+    @Override
+    public String toString() {
+        return "Envelope{" +
+                "topic=" + topic +
+                ", nickName='" + nickName + '\'' +
+                ", payload='" + payload + '\'' +
+                '}';
+    }
+
+    public Envelope(Topic topic, String nickName, String payload) {
         this.topic = topic;
+        this.nickName = nickName;
         this.payload = payload;
     }
 
@@ -20,28 +32,27 @@ public class Envelope {
         return topic;
     }
 
+    public String getNickName() {
+        return nickName;
+    }
+
     public String getPayload() {
         return payload;
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Envelope envelope = (Envelope) o;
-        return Objects.equals(topic, envelope.topic) && Objects.equals(payload, envelope.payload);
+        return topic == envelope.topic && Objects.equals(nickName, envelope.nickName) && Objects.equals(payload, envelope.payload);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(topic, payload);
+        return Objects.hash(topic, nickName, payload);
     }
 
-    @Override
-    public String toString() {
-        return "Envelope{" +
-                "topic=" + topic +
-                ", payload='" + payload + '\'' +
-                '}';
-    }
+
 }

@@ -29,24 +29,20 @@ public class WebsocketHandler {
     public void messages(Session session, String payload){
         try {
             Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
-            System.out.println("1" + env);
             Token result;
             long id;
             switch(env.getTopic()) {
                 case auth:
-                    System.out.println("2 - auth");
-                    System.out.println("3" + env.getPayload());
+                    System.out.println(env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
                     id = result.getId();
                     this.websocketConnectionPool.addSession(id,session);
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     break;
                 case message:
-                    System.out.println("4 - massage");
                     this.broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     break;
                 case disconnect:
-                    System.out.println("5 - disconnect");
                     broker.broadcast(this.websocketConnectionPool.getSessions(), env);
                     result = TokenProvider.decode(env.getPayload());
                     id = result.getId();

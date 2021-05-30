@@ -93,17 +93,17 @@ public class UsersHandler extends HttpServlet {
             String url = req.getRequestURI();
             if (url.equals("/chat/auth")) {
                 UserAuthDto payload = JsonHelper.fromJson(body, UserAuthDto.class).orElseThrow(BadRequest::new);
-                String[] result = null;
+                String result = null;
 
                 if(payload != null){
                     result = this.usersController.auth(payload);
+                    System.out.println(result);
                 }
                 if (Objects.nonNull(result)){
-                    resp.setContentType("text/html");
+                    resp.setContentType("application/json");
                     resp.setHeader("Access-Control-Allow-Origin", "*");
-                    resp.setHeader("Authorization", result[1]);
                     resp.setStatus(200);
-                    out.write(result[0]);
+                    out.write(result);
                     System.out.println("Send 200");
                 } else {
                     resp.setHeader("Access-Control-Allow-Origin", "*");

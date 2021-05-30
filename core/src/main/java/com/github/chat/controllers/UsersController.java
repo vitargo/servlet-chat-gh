@@ -1,5 +1,6 @@
 package com.github.chat.controllers;
 
+import com.github.chat.dto.ConfirmDto;
 import com.github.chat.dto.RoomRegDto;
 import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
@@ -7,6 +8,7 @@ import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
 import com.github.chat.payload.Token;
 import com.github.chat.service.IService;
+import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
 import com.github.chat.utils.TransferObject;
 import org.slf4j.Logger;
@@ -29,8 +31,7 @@ public class UsersController {
         this.roomService = roomService;
     }
 
-    public String[] auth(UserAuthDto payload) {
-        String[] auth = new String[2];
+    public String auth(UserAuthDto payload) {
         User user = this.usersService.findUser(toUser(payload));
         if (!Objects.isNull(user) && user.isVerification()) {
             int LIFETIME = 604800000;
@@ -41,9 +42,8 @@ public class UsersController {
                     System.currentTimeMillis()
             );
             log.info("Generate authorization token successfully!");
-            auth[0] = user.getNickName();
-            auth[1] = TokenProvider.encode(token);
-            return auth;
+            ConfirmDto c = new ConfirmDto(user.getNickName(), TokenProvider.encode(token));
+            return JsonHelper.toJson(c).get();
         } else {
             return null;
         }
