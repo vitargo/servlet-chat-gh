@@ -6,6 +6,8 @@ public class Envelope {
 
     private Topic topic;
 
+    private String nickName;
+
     private Integer roomId;
 
     private String payload;
@@ -13,8 +15,9 @@ public class Envelope {
     public Envelope() {
     }
 
-    public Envelope(Topic topic, Integer roomId, String payload) {
+    public Envelope(Topic topic, String nickName, Integer roomId, String payload) {
         this.topic = topic;
+        this.nickName = nickName;
         this.roomId = roomId;
         this.payload = payload;
     }
@@ -63,5 +66,13 @@ public class Envelope {
                 ", roomId=" + roomId +
                 ", payload='" + payload + '\'' +
                 '}';
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }

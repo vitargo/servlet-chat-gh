@@ -51,7 +51,7 @@ public class WebsocketHandler {
                     System.out.printf(String.valueOf(ssessia));
                     broker.broadcast(websocketRoomMap.getSessions(idRoom), env);
                     break;
-                case sendTextMessage:
+                case messages:
                     message = env.getPayload();
                     System.out.println("lox podzalupniy prislal vam soobsheniye");
                     messagesController.saveMessage(nickname, message,idRoom);
