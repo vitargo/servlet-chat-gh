@@ -25,6 +25,11 @@ public class MessageServiceImpl implements IMessageService{
     }
 
     @Override
+    public List findByRoom(int id) {
+        return this.repo.findByRoom(id);
+    }
+
+    @Override
     public void update(Message message) {
 
     }

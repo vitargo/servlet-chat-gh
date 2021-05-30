@@ -11,6 +11,8 @@ public interface MessageRepository {
 
     List<Message> findAll();
 
+    List findByRoom(int id);
+
     void update(Message message);
 
     void remove(Message message);

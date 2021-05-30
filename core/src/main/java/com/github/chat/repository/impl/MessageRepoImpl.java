@@ -5,6 +5,7 @@ import com.github.chat.repository.MessageRepository;
 import com.github.chat.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,22 @@ public class MessageRepoImpl implements MessageRepository {
     public List<Message> findAll() {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.createQuery("select p from Message p", Message.class).list();
+        }
+    }
+
+    @Override
+    public List findByRoom(int id) {
+        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+            Query<Message> query = session.createQuery("select p from Message p where chatId = :id", Message.class);
+            query.setParameter("id", id);
+            int countMessage = query.list().size();
+            if (countMessage < 30) {
+                return query.list();
+            } else {
+                query.setFirstResult(countMessage - 30);
+                query.setMaxResults(countMessage);
+            }
+            return query.list();
         }
     }
 

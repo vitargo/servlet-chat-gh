@@ -1,5 +1,7 @@
 package com.github.chat.handlers;
 
+import com.github.chat.config.ControllerConfig;
+import com.github.chat.controllers.MessagesController;
 import com.github.chat.controllers.UsersController;
 import com.github.chat.dto.RoomRegDto;
 import com.github.chat.dto.UserAuthDto;
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
 public class UsersHandler extends HttpServlet {
 
     private final UsersController usersController;
+
+    private final MessagesController messagesController = ControllerConfig.messagesController();
 
     public UsersHandler(UsersController usersController) {
         this.usersController = usersController;
@@ -59,6 +63,9 @@ public class UsersHandler extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
         String url = req.getRequestURI();
+        if (url.endsWith("/chat")) {
+            out.write(JsonHelper.toJson(this.messagesController.findByRoom(1)).get());
+        }
         if(url.substring(1).contains("/")){
             String[] urlSplit = url.split("/", 4);
             if(urlSplit[2].equals("verification")) {

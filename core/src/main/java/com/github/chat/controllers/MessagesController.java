@@ -27,4 +27,8 @@ public class MessagesController {
         return this.messageService.findAll();
 
     }
+
+    public List findByRoom(Integer id) {
+        return this.messageService.findByRoom(id);
+    }
 }
