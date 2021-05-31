@@ -30,7 +30,6 @@ public class ServerConfig {
         }
 
         tomcat.setPort(Integer.parseInt(webPort));
-
         tomcat.getHost().setAppBase(".");
 
         File f = new File("core/web");

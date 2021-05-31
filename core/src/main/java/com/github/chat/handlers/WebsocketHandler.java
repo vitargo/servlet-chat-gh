@@ -33,10 +33,10 @@ public class WebsocketHandler {
 
     @OnMessage
     public void messages(Session session, String payload) {
+        Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
+        Token result;
+        long id = 0L;
         try {
-            Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
-            Token result;
-            long id;
             switch (env.getTopic()) {
                 case auth:
                     log.info("auth: " + env);
@@ -69,6 +69,9 @@ public class WebsocketHandler {
             }
         } catch (Throwable e) {
             log.warn("Enter: {}", e.getMessage());
+            synchronized( websocketRoomMap ) {
+                websocketRoomMap.removeUserFromSession(env.getRoomId(), id);
+            }
         }
     }
 }
