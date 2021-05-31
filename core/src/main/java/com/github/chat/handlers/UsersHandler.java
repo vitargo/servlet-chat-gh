@@ -5,6 +5,7 @@ import com.github.chat.controllers.MessagesController;
 import com.github.chat.controllers.UsersController;
 import com.github.chat.dto.RoomRegDto;
 import com.github.chat.dto.UserAuthDto;
+import com.github.chat.dto.UserForgotLoginDto;
 import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
@@ -147,6 +148,30 @@ public class UsersHandler extends HttpServlet {
                     } else {
                         resp.setStatus(403);
                     }
+                }
+            }
+            if (url.endsWith("/forgot_login")) {
+                UserForgotLoginDto payload = JsonHelper.fromJson(body, UserForgotLoginDto.class).orElseThrow(BadRequest::new);
+                String result = null;
+                if (payload != null) {
+                    result = this.usersController.forgotLogin(payload);
+                }
+                if (result != null) {
+                    out.write(result);
+                } else {
+                    resp.setStatus(403);
+                }
+            }
+            if (url.endsWith("/forgot_pass")) {
+                UserForgotLoginDto payload = JsonHelper.fromJson(body, UserForgotLoginDto.class).orElseThrow(BadRequest::new);
+                String result = null;
+                if (payload != null) {
+                    result = this.usersController.forgotPass(payload);
+                }
+                if (result != null) {
+                    out.write(result);
+                } else {
+                    resp.setStatus(403);
                 }
             }
         }

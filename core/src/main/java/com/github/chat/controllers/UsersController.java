@@ -2,6 +2,7 @@ package com.github.chat.controllers;
 
 import com.github.chat.dto.RoomRegDto;
 import com.github.chat.dto.UserAuthDto;
+import com.github.chat.dto.UserForgotLoginDto;
 import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
@@ -89,13 +90,38 @@ public class UsersController {
         }
     }
 
-    public Room regRoom(RoomRegDto payload){
+    public Room regRoom(RoomRegDto payload) {
         Room room = TransferObject.toRoom(payload);
-        if(Objects.nonNull(room)){
+        if (Objects.nonNull(room)) {
             this.roomService.create(room);
         } else {
             log.error("Room is null");
         }
         return room;
+    }
+
+    public String forgotLogin(UserForgotLoginDto payload) {
+        User user = toUser(payload);
+        User result = null;
+        if (Objects.nonNull(user)) {
+            result = this.usersService.findByEmail(user);
+            return result.getLogin();
+        } else {
+            log.info("This User is not exist!");
+        return null;
+        }
+
+    }
+
+    public String forgotPass(UserForgotLoginDto payload) {
+        User user = toUser(payload);
+        User result = null;
+        if (Objects.nonNull(user)) {
+            result = this.usersService.findByEmail(user);
+            return result.getPassword();
+        } else {
+            log.info("This User is not exist!");
+            return null;
+        }
     }
 }

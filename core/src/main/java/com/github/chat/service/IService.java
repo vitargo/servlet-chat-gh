@@ -16,4 +16,7 @@ public interface IService<T> {
 
     void delete(T entity);
 
+    default User findByEmail(User user) {
+        return null;
+    }
 }

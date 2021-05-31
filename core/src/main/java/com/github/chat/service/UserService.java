@@ -49,5 +49,8 @@ public class UserService implements IService<User> {
         this.repo.remove(user);
     }
 
-
+    @Override
+    public User findByEmail(User user) {
+        return this.repo.findByEmail(user);
+    }
 }

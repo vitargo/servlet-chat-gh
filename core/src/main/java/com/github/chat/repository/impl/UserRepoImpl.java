@@ -1,6 +1,7 @@
 package com.github.chat.repository.impl;
 
 import com.github.chat.controllers.UsersController;
+import com.github.chat.entity.Message;
 import com.github.chat.entity.User;
 import com.github.chat.repository.Repository;
 import com.github.chat.utils.HibernateUtils;
@@ -14,7 +15,9 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserRepoImpl implements Repository<User> {
 
@@ -40,6 +43,22 @@ public class UserRepoImpl implements Repository<User> {
     public List<User> findAll() {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.createQuery("select p from User p", User.class).list();
+        }
+    }
+
+    public List<User> findById(List<Long> id){
+        List<User> users = new ArrayList<>();
+        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+            for (Long oneId:id) {
+                Query<User> query = session.createQuery("select p from User p where id = :id", User.class);
+                query.setParameter("id", oneId);
+                if (query.uniqueResultOptional().orElse(null) != null) {
+                    users.add(query.getSingleResult());
+                } else {
+                    System.out.println("Not found User with id = " + oneId);
+                }
+            }
+            return users;
         }
     }
 
@@ -90,6 +109,15 @@ public class UserRepoImpl implements Repository<User> {
             return null;
         }
         return user;
+    }
+
+    @Override
+    public User findByEmail(User user) {
+        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+            Query<User> query = session.createQuery("select p from User p where email = :email", User.class);
+            query.setParameter("email", user.getEmail());
+            return query.getSingleResult();
+        }
     }
 
     @Override

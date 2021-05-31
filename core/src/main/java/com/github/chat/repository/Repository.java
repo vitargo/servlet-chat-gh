@@ -19,4 +19,7 @@ public interface Repository<T> {
 
     void remove(T entity);
 
+    default User findByEmail(User email) {
+        return null;
+    }
 }
