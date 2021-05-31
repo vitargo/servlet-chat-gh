@@ -50,7 +50,7 @@ public class UsersHandler extends HttpServlet {
         System.out.println(httpServletRequestToString(req));
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH, OPTIONS");
-        resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        resp.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp.setHeader("Content-Type", "application/json");
         resp.setStatus(204);
         System.out.println("Response 204");;
@@ -58,28 +58,56 @@ public class UsersHandler extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        System.out.println("DO GET");
         PrintWriter out = resp.getWriter();
         String url = req.getRequestURI();
-        if(url.substring(1).contains("/")){
-            String[] urlSplit = url.split("/", 4);
-            if(urlSplit[2].equals("verification")) {
-                Token t = TokenProvider.decode(urlSplit[3]);
-                if(TokenProvider.checkToken(t)) {
-                    User user = this.usersController.confirmation(new UserRegDto(t.getNickname()));
-                    if(Objects.nonNull(user)){
-                        resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-                    } else {
-                        resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    }
+        if(url.equals("/chat/myaccount")) {
+            String token = req.getHeader("Authorization");
+            Token t = TokenProvider.decode(token);
+            if (TokenProvider.checkToken(t)) {
+                User user = this.usersController.confirmation(new UserRegDto(t.getNickname()));
+                if (Objects.nonNull(user)) {
+                    System.out.println(200);
+                    resp.setContentType("application/json");
+                    resp.setHeader("Access-Control-Allow-Origin", "*");
+                    resp.setStatus(200);
+                    out.write(JsonHelper.toJson(new User(user.getNickName(),
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getEmail(),
+                            user.getLogin(),
+                            null,
+                            user.getPhone(),
+                            user.getCompanyName(),
+                            user.getAvatar())).get());
                 } else {
-                    resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    out.write("Expired token!");
+                    System.out.println(403);
+                    resp.setHeader("Access-Control-Allow-Origin", "*");
+                    resp.setStatus(403);
                 }
             }
-        } else {
-            System.out.println(httpServletRequestToString(req));
+            if (url.substring(1).contains("/")) {
+                String[] urlSplit = url.split("/", 4);
+                if (urlSplit[2].equals("verification")) {
+                    Token tok = TokenProvider.decode(urlSplit[3]);
+                    if (TokenProvider.checkToken(t)) {
+                        User user = this.usersController.confirmation(new UserRegDto(tok.getNickname()));
+                        if (Objects.nonNull(user)) {
+                            System.out.println(200);
+                            resp.setStatus(200);
+                        } else {
+                            System.out.println(403);
+                            resp.setStatus(403);
+                        }
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        out.write("Expired token!");
+                    }
+                }
+            } else {
+                System.out.println(httpServletRequestToString(req));
+            }
         }
-
     }
 
     @Override
@@ -165,11 +193,18 @@ public class UsersHandler extends HttpServlet {
                         payload.setId(t.getId());
                         payload.setVerification(true);
                         this.usersController.update(payload);
+                        System.out.println(200);
+                        resp.setHeader("Access-Control-Allow-Origin", "*");
                         resp.setStatus(200);
                     } else {
+                        System.out.println(403);
+                        resp.setHeader("Access-Control-Allow-Origin", "*");
                         resp.setStatus(403);
                         out.write("No data to update!");
                     }
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    out.write("Expired token!");
                 }
             }
         }
