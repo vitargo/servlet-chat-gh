@@ -11,6 +11,8 @@ import com.github.chat.payload.Token;
 import com.github.chat.utils.EmailSender;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +28,8 @@ import java.util.stream.Collectors;
 
 public class UsersHandler extends HttpServlet {
 
+    private static final Logger log = LoggerFactory.getLogger(UsersHandler.class);
+
     private final UsersController usersController;
 
     public UsersHandler(UsersController usersController) {
@@ -36,8 +40,8 @@ public class UsersHandler extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try{
             super.service(req, resp);
-            System.out.println("In Servise");
-            System.out.println(httpServletRequestToString(req));
+            log.info("Start service method");
+            log.info(httpServletRequestToString(req));
 
         } catch (BadRequest e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid body");
@@ -46,8 +50,8 @@ public class UsersHandler extends HttpServlet {
 
     @Override
     public void doOptions(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        System.out.println("DO OPTIONS");
-        System.out.println(httpServletRequestToString(req));
+        log.info("Start doOptions method");
+        log.info(httpServletRequestToString(req));
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH, OPTIONS");
         resp.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -58,7 +62,7 @@ public class UsersHandler extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        System.out.println("DO GET");
+        log.info("Start doGet method");
         PrintWriter out = resp.getWriter();
         String url = req.getRequestURI();
         if(url.equals("/chat/myaccount")) {
@@ -70,7 +74,6 @@ public class UsersHandler extends HttpServlet {
                     System.out.println(200);
                     resp.setContentType("application/json");
                     resp.setHeader("Access-Control-Allow-Origin", "*");
-                    resp.setStatus(200);
                     out.write(JsonHelper.toJson(new User(user.getNickName(),
                             user.getFirstName(),
                             user.getLastName(),
@@ -81,7 +84,6 @@ public class UsersHandler extends HttpServlet {
                             user.getCompanyName(),
                             user.getAvatar())).get());
                 } else {
-                    System.out.println(403);
                     resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setStatus(403);
                 }
@@ -93,10 +95,10 @@ public class UsersHandler extends HttpServlet {
                     if (TokenProvider.checkToken(t)) {
                         User user = this.usersController.confirmation(new UserRegDto(tok.getNickname()));
                         if (Objects.nonNull(user)) {
-                            System.out.println(200);
+                            resp.setHeader("Access-Control-Allow-Origin", "*");
                             resp.setStatus(200);
                         } else {
-                            System.out.println(403);
+                            resp.setHeader("Access-Control-Allow-Origin", "*");
                             resp.setStatus(403);
                         }
                     } else {
@@ -104,15 +106,13 @@ public class UsersHandler extends HttpServlet {
                         out.write("Expired token!");
                     }
                 }
-            } else {
-                System.out.println(httpServletRequestToString(req));
             }
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        System.out.println("DO POST");
+        log.info("Start doPost method");
         PrintWriter out = resp.getWriter();
         String body = req.getReader().lines().collect(Collectors.joining());
         if (!"application/json".equalsIgnoreCase(req.getHeader("Content-Type"))) {
@@ -122,10 +122,9 @@ public class UsersHandler extends HttpServlet {
             if (url.equals("/chat/auth")) {
                 UserAuthDto payload = JsonHelper.fromJson(body, UserAuthDto.class).orElseThrow(BadRequest::new);
                 String result = null;
-
                 if(payload != null){
                     result = this.usersController.auth(payload);
-                    System.out.println(result);
+                    log.info(result);
                 }
                 if (Objects.nonNull(result)){
                     resp.setContentType("application/json");
@@ -148,7 +147,6 @@ public class UsersHandler extends HttpServlet {
                 if (result != null){
                     resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setStatus(200);
-                    System.out.println(result);;
                     EmailSender.sendEmail(payload.getEmail(), result);
                 } else {
                     resp.setHeader("Access-Control-Allow-Origin", "*");
@@ -167,8 +165,10 @@ public class UsersHandler extends HttpServlet {
                         result = this.usersController.regRoom(payload);
                     }
                     if (result != null){
+                        resp.setHeader("Access-Control-Allow-Origin", "*");
                         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
                     } else {
+                        resp.setHeader("Access-Control-Allow-Origin", "*");
                         resp.setStatus(403);
                     }
                 }
@@ -203,6 +203,7 @@ public class UsersHandler extends HttpServlet {
                         out.write("No data to update!");
                     }
                 } else {
+                    resp.setHeader("Access-Control-Allow-Origin", "*");
                     resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     out.write("Expired token!");
                 }
