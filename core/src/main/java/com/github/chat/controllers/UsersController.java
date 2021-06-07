@@ -6,7 +6,6 @@ import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
-import com.github.chat.payload.Token;
 import com.github.chat.service.IService;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
@@ -34,15 +33,9 @@ public class UsersController {
     public String auth(UserAuthDto payload) {
         User user = this.usersService.findUser(toUser(payload));
         if (!Objects.isNull(user) && user.isVerification()) {
-            int LIFETIME = 604800000;
-            Token token = new Token(
-                    user.getId(),
-                    user.getNickName(),
-                    System.currentTimeMillis() + LIFETIME,
-                    System.currentTimeMillis()
-            );
+            String jwt = TokenProvider.encode(user.getId(), user.getNickName());
             log.info("Generate authorization token successfully!");
-            ConfirmDto c = new ConfirmDto(user.getNickName(), TokenProvider.encode(token));
+            ConfirmDto c = new ConfirmDto(user.getNickName(), jwt);
             return JsonHelper.toJson(c).get();
         } else {
             return null;
@@ -55,15 +48,9 @@ public class UsersController {
         if (Objects.isNull(user)) {
             User u = this.usersService.create(newUser);
             log.info("Check the User on uniq and add to db!");
-            int LIFETIME = 604800000;
-            Token token = new Token(
-                    u.getId(),
-                    u.getNickName(),
-                    System.currentTimeMillis() + LIFETIME,
-                    System.currentTimeMillis()
-            );
+            String jwt = TokenProvider.encode(user.getId(), user.getNickName());
             log.info("Generate authorization token successfully!");
-            return TokenProvider.encode(token);
+            return jwt;
         } else {
             log.info("This User is already exist!");
             return null;

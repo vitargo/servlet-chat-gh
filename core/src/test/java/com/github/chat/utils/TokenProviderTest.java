@@ -1,33 +1,37 @@
 package com.github.chat.utils;
 
-import com.github.chat.exceptions.CryptoException;
-import com.github.chat.payload.Token;
-import org.junit.Assert;
+import io.jsonwebtoken.Claims;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class TokenProviderTest {
 
-    Token t = new Token(1L, "Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
-    Token tAnother = new Token(2L, "dfshjdkhfs", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
-    Token tNull = null;
-
     @Test
-    public void encode (){
-        String cipher = TokenProvider.encode(t);
-        Token token = TokenProvider.decode(cipher);
-        Assert.assertEquals(t,token);
+    public void decode (){
+        long jwtId = 123L;
+        String jwtIssuer = "First";
+        String jwt = TokenProvider.encode(jwtId,jwtIssuer);
+        Claims claims = TokenProvider.decode(jwt);
+        assertEquals(String.valueOf(jwtId), claims.getId());
+        assertEquals(jwtIssuer, claims.getIssuer());
     }
 
     @Test
-    public void encodeAnother (){
-        String cipher = TokenProvider.encode(tAnother);
-        Token token = TokenProvider.decode(cipher);
-        Assert.assertEquals(tAnother,token);
+    public void decodeAnother (){
+        long jwtId = 1237428394729384L;
+        String jwtIssuer = "Second time";
+        String jwt = TokenProvider.encode(jwtId,jwtIssuer);
+        Claims claims = TokenProvider.decode(jwt);
+        assertEquals(String.valueOf(jwtId), claims.getId());
+        assertEquals(jwtIssuer, claims.getIssuer());
     }
 
-    @Test (expected = CryptoException.class)
-    public void encodeNull (){
-        String cipher = TokenProvider.encode(tNull);
-        Token token = TokenProvider.decode(cipher);
+    @Test
+    public void decodeShouldFail() {
+        String notAJwt = "This is not a JWT";
+        Claims claims = TokenProvider.decode(notAJwt);
+        assertNull(claims);
     }
 }

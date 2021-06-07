@@ -1,8 +1,8 @@
 package com.github.chat.utils;
 
 import com.github.chat.payload.Envelope;
-import com.github.chat.payload.Token;
 import com.github.chat.payload.Topic;
+import io.jsonwebtoken.Claims;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,11 +23,13 @@ public class JsonHelperTest {
 
     @Test
     public void toJson2() {
-        Token token = new Token(1L, "Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
-        String data = TokenProvider.encode(token);
-        Envelope env = new Envelope(Topic.auth, "nickName", 1, data);
+        long jwtId = 123;
+        String jwtIssuer = "First";
+        String jwt = TokenProvider.encode(jwtId,jwtIssuer);
+        Claims claims = TokenProvider.decode(jwt);
+        Envelope env = new Envelope(Topic.auth, "nickName", 1, jwt);
         String result = JsonHelper.toJson(env).get();
-        Optional<String> result2 = JsonHelper.toJson(token);
+        Optional<String> result2 = JsonHelper.toJson(jwt);
         Envelope acte = JsonHelper.fromJson(result, Envelope.class).get();
         Assert.assertEquals(env, acte);
     }
@@ -41,11 +43,13 @@ public class JsonHelperTest {
 
     @Test
     public void fromJson2() {
-        Token token = new Token(1L, "Bbbb", System.currentTimeMillis() + 1800000, System.currentTimeMillis());
-        String cipherToken = TokenProvider.encode(token);
-        Envelope env = new Envelope(Topic.auth, "nickName", 1, cipherToken);
+        long jwtId = 123;
+        String jwtIssuer = "First";
+        String jwt = TokenProvider.encode(jwtId,jwtIssuer);
+        Claims claims = TokenProvider.decode(jwt);
+        Envelope env = new Envelope(Topic.auth, "nickName", 1, jwt);
         String res = JsonHelper.toJson(env).orElseThrow();
-        String payload = "{\"topic\":\"auth\",\"payload\":\"" + cipherToken + "\"}";
+        String payload = "{\"topic\":\"auth\",\"payload\":\"" + jwt + "\"}";
         Assert.assertEquals(payload, res);
     }
 }

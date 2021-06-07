@@ -5,7 +5,6 @@ import com.github.chat.dto.UserAuthDto;
 import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
-import com.github.chat.payload.Token;
 
 import java.util.Objects;
 
@@ -36,12 +35,6 @@ public class TransferObject {
         }
         user.setPassword(data.getPassword());
         return user;
-    }
-
-    public static User toUserByNickname(Token token) {
-        return new User(
-                token.getNickname()
-        );
     }
 
     public static Room toRoom(RoomRegDto roomRegDto) {

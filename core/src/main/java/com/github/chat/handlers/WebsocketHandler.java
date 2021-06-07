@@ -5,11 +5,11 @@ import com.github.chat.network.Broker;
 import com.github.chat.network.WebsocketConnectionPool;
 import com.github.chat.network.WebsocketRoomMap;
 import com.github.chat.payload.Envelope;
-import com.github.chat.payload.Token;
 import com.github.chat.payload.Topic;
 import com.github.chat.repository.impl.UserRepoImpl;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class WebsocketHandler {
     @OnMessage
     public void messages(Session session, String payload) {
         Envelope env = JsonHelper.fromJson(payload, Envelope.class).get();
-        Token result;
+        Claims result;
         long id = 0L;
         try {
             switch (env.getTopic()) {
@@ -42,7 +42,7 @@ public class WebsocketHandler {
                     log.info("auth: " + env);
                     System.out.println(env.getPayload());
                     result = TokenProvider.decode(env.getPayload());
-                    id = result.getId();
+                    id = Long.parseLong(result.getId());
                     this.websocketRoomMap.addSession(env.getRoomId(), id, session);
                     WebsocketConnectionPool websocketConnectionPool = this.websocketRoomMap.getWSPool(env.getRoomId());
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
@@ -61,7 +61,7 @@ public class WebsocketHandler {
                     websocketConnectionPool = this.websocketRoomMap.getWSPool(env.getRoomId());
                     broker.broadcast(websocketConnectionPool.getSessions(), env);
                     result = TokenProvider.decode(env.getPayload());
-                    id = result.getId();
+                    id = Long.parseLong(result.getId());
                     websocketConnectionPool.removeSession(id);
                     websocketConnectionPool.getSession(id).close();
                     break;

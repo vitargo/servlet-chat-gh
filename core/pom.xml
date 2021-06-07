@@ -160,6 +160,21 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.19.jre7</version>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+            <version>4.1.60.Final</version>
+        </dependency>
+
+        <!--                                    -->
+        <!--          JWT                       -->
+        <!--                                    -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

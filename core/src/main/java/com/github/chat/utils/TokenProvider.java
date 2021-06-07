@@ -1,85 +1,58 @@
 package com.github.chat.utils;
 
 import com.github.chat.exceptions.CryptoException;
-import com.github.chat.payload.Token;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.spec.KeySpec;
-import java.util.Base64;
+import javax.xml.bind.DatatypeConverter;
+import java.security.Key;
+import java.util.Date;
 
 public class TokenProvider {
 
     private static final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
+    private static final long TERM = 604800000;
+
     private static final String SECRET_KEY = "PinkLink";
 
-    private static final String SALT = "ServletChat";
-
-    private static byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-
-    public static String encode(Token t) {
-        if(t == null){
-            throw new CryptoException ("Empty token!");
+    public static String encode(long id, String nickname) {
+        if(nickname == null || id < 0){
+            throw new CryptoException ("Not valid user!");
         }
-        String str = JsonHelper.toJson(t).get();
-        try {
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), SALT.getBytes(), 65536, 256);
-            SecretKey tmp = factory.generateSecret(spec);
-            SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+        long nowMillis = System.currentTimeMillis();
+        Date now = new Date(nowMillis);
 
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivspec);
-            return Base64.getEncoder()
-                    .encodeToString(cipher.doFinal(str.getBytes(StandardCharsets.UTF_8)));
-        } catch (Exception e) {
-            log.error("Error while encrypting: " + e);
-        }
-        log.info("Cipher token!");
-        return null;
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY);
+        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+
+        JwtBuilder builder = Jwts.builder().setId(String.valueOf(id))
+                .setIssuedAt(now)
+                .setIssuer(nickname)
+                .signWith(signatureAlgorithm, signingKey);
+
+        long expMillis = nowMillis + TERM;
+        Date exp = new Date(expMillis);
+        builder.setExpiration(exp);
+
+        return builder.compact();
     }
 
-    public static Token decode(String str) {
-        Token newT = null;
-
+    public static Claims decode(String jwt) {
+        Claims claims = null;
         try {
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
-
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), SALT.getBytes(), 65536, 256);
-            SecretKey tmp = factory.generateSecret(spec);
-            SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
-
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
-            newT = JsonHelper.fromJson(new String(cipher.doFinal(Base64.getDecoder().decode(str))), Token.class).orElse(null);
-        } catch (Exception e) {
-            log.error("Error while decrypting: " + e);
+            claims = Jwts.parser()
+                    .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
+                    .parseClaimsJws(jwt).getBody();
+        } catch (MalformedJwtException | AssertionError e) {
+            log.warn("Token is not a JWT format!");
+            return null;
         }
-        return newT;
-    }
 
-    public static boolean checkToken(Token token) {
-        if(token == null){
-            log.error("Invalid token(null)!");
-            return false;
-        }
-        if (token.getExpire_in() < System.currentTimeMillis()){
-            log.error("Invalid token(expired)!");
-            return false;
-        } else {
-            return true;
-        }
+        return claims;
     }
 }

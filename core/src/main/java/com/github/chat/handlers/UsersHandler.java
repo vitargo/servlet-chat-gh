@@ -7,10 +7,10 @@ import com.github.chat.dto.UserRegDto;
 import com.github.chat.entity.Room;
 import com.github.chat.entity.User;
 import com.github.chat.exceptions.BadRequest;
-import com.github.chat.payload.Token;
 import com.github.chat.utils.EmailSender;
 import com.github.chat.utils.JsonHelper;
 import com.github.chat.utils.TokenProvider;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,14 +62,15 @@ public class UsersHandler extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Claims claims = null;
         log.info("Start doGet method");
         PrintWriter out = resp.getWriter();
         String url = req.getRequestURI();
         if(url.equals("/chat/myaccount")) {
             String token = req.getHeader("Authorization");
-            Token t = TokenProvider.decode(token);
-            if (TokenProvider.checkToken(t)) {
-                User user = this.usersController.confirmation(new UserRegDto(t.getNickname()));
+            claims = TokenProvider.decode(token);
+            if (claims != null && claims.getExpiration().getTime() > System.currentTimeMillis()) {
+                User user = this.usersController.confirmation(new UserRegDto(claims.getIssuer()));
                 if (Objects.nonNull(user)) {
                     System.out.println(200);
                     resp.setContentType("application/json");
@@ -91,9 +92,9 @@ public class UsersHandler extends HttpServlet {
             if (url.substring(1).contains("/")) {
                 String[] urlSplit = url.split("/", 4);
                 if (urlSplit[2].equals("verification")) {
-                    Token tok = TokenProvider.decode(urlSplit[3]);
-                    if (TokenProvider.checkToken(t)) {
-                        User user = this.usersController.confirmation(new UserRegDto(tok.getNickname()));
+                    claims = TokenProvider.decode(urlSplit[3]);
+                    if (claims != null && claims.getExpiration().getTime() > System.currentTimeMillis()) {
+                        User user = this.usersController.confirmation(new UserRegDto(claims.getIssuer()));
                         if (Objects.nonNull(user)) {
                             resp.setHeader("Access-Control-Allow-Origin", "*");
                             resp.setStatus(200);
@@ -112,6 +113,7 @@ public class UsersHandler extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Claims claims = null;
         log.info("Start doPost method");
         PrintWriter out = resp.getWriter();
         String body = req.getReader().lines().collect(Collectors.joining());
@@ -155,10 +157,10 @@ public class UsersHandler extends HttpServlet {
             }
             if (url.equals("/chat/createroom")) {
                 String token = req.getHeader("Authorization");
-                Token t = TokenProvider.decode(token);
-                if (TokenProvider.checkToken(t)) {
+                claims = TokenProvider.decode(token);
+                if (claims != null && claims.getExpiration().getTime() > System.currentTimeMillis()) {
                     RoomRegDto payload = JsonHelper.fromJson(body, RoomRegDto.class).orElseThrow(BadRequest::new);
-                    long adminId = t.getId();
+                    long adminId = Long.parseLong(claims.getId());
                     payload.setAdminId(adminId);
                     Room result = null;
                     if (payload != null) {
@@ -177,7 +179,8 @@ public class UsersHandler extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Claims claims = null;
         PrintWriter out = resp.getWriter();
         String body = req.getReader().lines().collect(Collectors.joining());
         if (!"application/json".equalsIgnoreCase(req.getHeader("Content-Type"))) {
@@ -186,11 +189,11 @@ public class UsersHandler extends HttpServlet {
             String url = req.getRequestURI();
             if (url.equals("/chat/myaccount")) {
                 String token = req.getHeader("Authorization");
-                Token t = TokenProvider.decode(token);
-                if (TokenProvider.checkToken(t)) {
+                claims = TokenProvider.decode(token);
+                if (claims != null && claims.getExpiration().getTime() > System.currentTimeMillis()) {
                     UserRegDto payload = JsonHelper.fromJson(body, UserRegDto.class).orElseThrow(BadRequest::new);
                     if (payload != null) {
-                        payload.setId(t.getId());
+                        payload.setId(Long.parseLong(claims.getId()));
                         payload.setVerification(true);
                         this.usersController.update(payload);
                         System.out.println(200);
